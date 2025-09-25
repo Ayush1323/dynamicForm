@@ -1,0 +1,205 @@
+import { useState } from "react";
+import Button from "../common/Button";
+import { INPUT_TYPES } from "../utils/typesOfInput";
+
+const generateId = () => Date.now() + Math.floor(Math.random() * 10000);
+
+function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
+  const [selectedKey, setSelectedKey] = useState("");
+  const [label, setLabel] = useState("");
+  const [isRequired, setIsRequired] = useState(false);
+  const [editableMode, setEditableMode] = useState("");
+  const [placeholder, setPlaceholder] = useState("");
+  const [defaultValue, setDefaultValue] = useState("");
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    const newErrors = {};
+    if (!selectedKey) newErrors.selectedKey = "Please select a field type";
+    if (!label.trim()) newErrors.label = "Field label is required";
+
+    if (
+      (editableMode === "readonly" || editableMode === "disabled") &&
+      (defaultValue === "" || defaultValue === null)
+    ) {
+      newErrors.defaultValue = "Default value is required.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (!validate()) return;
+
+    const selectedOption = INPUT_TYPES.find((opt) => opt.key === selectedKey);
+
+    let valueToSet;
+    if (selectedOption?.inputType === "checkbox") {
+      valueToSet = !!defaultValue;
+    } else {
+      valueToSet = defaultValue || "";
+    }
+
+    const newField = {
+      id: generateId(),
+      key: label.toLowerCase().replace(/\s+/g, "_"),
+      inputType: selectedOption?.inputType || "text",
+      label,
+      isRequired,
+      editableMode,
+      placeholder,
+      value: valueToSet,
+    };
+
+    onAddField(formId, newField);
+    onClose();
+
+    setSelectedKey("");
+    setLabel("");
+    setIsRequired(false);
+    setEditableMode("");
+    setPlaceholder("");
+    setDefaultValue("");
+    setErrors({});
+  };
+
+  const selectedOption = INPUT_TYPES.find((opt) => opt.key === selectedKey);
+
+  return (
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 ${
+        isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+      }`}
+    >
+      <div className="bg-white rounded-[20px] w-full max-w-[408px] shadow-lg p-4">
+        <div className="flex justify-between items-center">
+          <div className="text-center text-xl font-bold">Add Field</div>
+          <div onClick={onClose} className="text-center cursor-pointer">
+            ❌
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <select
+            value={selectedKey}
+            onChange={(e) => {
+              setSelectedKey(e.target.value);
+              setErrors((prev) => ({ ...prev, selectedKey: "" }));
+            }}
+            className={`border rounded-md p-4 w-full focus:outline-none ${
+              errors.selectedKey ? "border-red-500" : "border-gray-300"
+            }`}
+          >
+            <option value="">Select Field Type</option>
+            {INPUT_TYPES?.map((opt) => (
+              <option key={opt.key} value={opt.key}>
+                {opt.key}
+              </option>
+            ))}
+          </select>
+          {errors.selectedKey && (
+            <p className="text-red-500 text-sm mt-1">{errors.selectedKey}</p>
+          )}
+        </div>
+
+        <div className="mt-4">
+          <label className="block font-medium">Field Label</label>
+          <input
+            value={label}
+            onChange={(e) => {
+              setLabel(e.target.value);
+              setErrors((prev) => ({ ...prev, label: "" }));
+            }}
+            type="text"
+            placeholder="Field Label"
+            className={`border rounded-md p-4 w-full capitalize focus:outline-none ${
+              errors.label ? "border-red-500" : "border-gray-300"
+            }`}
+          />
+          {errors.label && (
+            <p className="text-red-500 text-sm mt-1">{errors.label}</p>
+          )}
+        </div>
+
+        <div className="flex items-center gap-4 mt-4">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={isRequired}
+              onChange={(e) => setIsRequired(e.target.checked)}
+            />
+            Required
+          </label>
+
+          <label className="flex items-center gap-2">
+            <span>Editable Mode:</span>
+            <select
+              value={editableMode}
+              onChange={(e) => {
+                setEditableMode(e.target.value);
+                setErrors((prev) => ({ ...prev, defaultValue: "" }));
+              }}
+              className="border rounded-md p-1"
+            >
+              <option value="">Select Mode</option>
+              <option value="readonly">Read Only</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </label>
+        </div>
+
+        {(editableMode === "readonly" || editableMode === "disabled") && (
+          <div className="mt-4">
+            {selectedOption?.inputType === "checkbox" ? (
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={!!defaultValue}
+                  onChange={(e) => setDefaultValue(e.target.checked)}
+                />
+                Default Value
+              </label>
+            ) : (
+              <>
+                <label className="block font-medium">Default Value</label>
+                <input
+                  type="text"
+                  value={defaultValue}
+                  onChange={(e) => setDefaultValue(e.target.value)}
+                  placeholder="Enter default value"
+                  className={`border rounded-md p-4 w-full focus:outline-none ${
+                    errors.defaultValue ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+              </>
+            )}
+            {errors.defaultValue && (
+              <p className="text-red-500 text-sm mt-1">{errors.defaultValue}</p>
+            )}
+          </div>
+        )}
+
+        <div className="mt-4">
+          <label className="block font-medium">Placeholder (optional)</label>
+          <input
+            type="text"
+            value={placeholder}
+            onChange={(e) => setPlaceholder(e.target.value)}
+            placeholder="Enter placeholder"
+            className="border rounded-md p-4 w-full focus:outline-none border-gray-300"
+          />
+        </div>
+
+        <Button
+          buttonLabel="Submit"
+          type="button"
+          onClick={handleSubmit}
+          className="w-full mt-5 bg-purple-300 hover:bg-purple-400"
+        />
+      </div>
+    </div>
+  );
+}
+
+export default AddFieldPopup;
