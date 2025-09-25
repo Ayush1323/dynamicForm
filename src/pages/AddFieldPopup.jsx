@@ -87,7 +87,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
               setSelectedKey(e.target.value);
               setErrors((prev) => ({ ...prev, selectedKey: "" }));
             }}
-            className={`border rounded-md p-4 w-full focus:outline-none ${
+            className={`border rounded-md p-4 w-full focus:outline-none cursor-pointer ${
               errors.selectedKey ? "border-red-500" : "border-gray-300"
             }`}
           >
@@ -140,9 +140,9 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
                 setEditableMode(e.target.value);
                 setErrors((prev) => ({ ...prev, defaultValue: "" }));
               }}
-              className="border rounded-md p-1"
+              className="border rounded-md p-1 cursor-pointer"
             >
-              <option value="">Select Mode</option>
+              <option value="">Default Mode</option>
               <option value="readonly">Read Only</option>
               <option value="disabled">Disabled</option>
             </select>
@@ -160,6 +160,18 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
                 />
                 Default Value
               </label>
+            ) : selectedOption?.inputType === "date" ? (
+              <>
+                <label className="block font-medium">Default Value</label>
+                <input
+                  type="date"
+                  value={defaultValue}
+                  onChange={(e) => setDefaultValue(e.target.value)}
+                  className={`border rounded-md p-4 w-full focus:outline-none ${
+                    errors.defaultValue ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+              </>
             ) : (
               <>
                 <label className="block font-medium">Default Value</label>

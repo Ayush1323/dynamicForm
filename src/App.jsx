@@ -101,13 +101,12 @@ function App() {
           >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Form {index + 1}</h2>
-              <button
+              <Button
                 type="button"
                 onClick={() => toggleCollapse(form.id)}
-                className="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300"
-              >
-                {isCollapsed ? "Expand All" : "Collapse All"}
-              </button>
+                className="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300 cursor-pointer !text-black"
+                buttonLabel={isCollapsed ? "Expand All" : "Collapse All"}
+              />
             </div>
 
             {!isCollapsed && (

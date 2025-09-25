@@ -149,6 +149,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
                 errors.value ? "border-red-500" : ""
               }`}
               placeholder="Default value"
+              min={field.inputType === "number" ? 0 : undefined}
             />
             {errors.value && (
               <p className="text-red-500 text-sm mt-1">{errors.value}</p>
@@ -238,12 +239,12 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
           </div>
 
           <div className="flex justify-end gap-2 mt-4">
-            <button onClick={onClose} className="px-4 py-2 border rounded">
+            <button onClick={onClose} className="px-4 py-2 border rounded cursor-pointer">
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-2 bg-blue-500 text-white rounded"
+              className="px-6 py-2 bg-blue-500 text-white rounded cursor-pointer"
             >
               Save
             </button>
