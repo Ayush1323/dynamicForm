@@ -1,4 +1,4 @@
-# Dynamic Form 
+# Dynamic Form
 
 In this user can manage the multiple Dynamic nested forms in which user can manange and edit the form fields as per the requirement.
 
@@ -8,7 +8,7 @@ Make sure you have installed Node.JS on your system or You can download from the
 
 # Project Installation and Setup Instructions
 
-Dynamic Form in which using of "React JS" .
+This project is built using React.js with Vite.
 
 Install the whole setup from the Git Repository using these steps.
 
@@ -18,7 +18,7 @@ Install the whole setup from the Git Repository using these steps.
 
 **Step 2** : Check the latest version of Node JS.
 
-            "node -v"
+            "node -v (v24.3.0)"
 
 **Step 3** : Need to check the path of your colned project
 
