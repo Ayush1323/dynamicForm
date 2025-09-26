@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Button from "../common/Button";
 import { INPUT_TYPES } from "../utils/typesOfInput";
+import CheckboxField from "../common/fields/CheckboxField";
+import InputField from "../common/fields/InputField";
 
 const generateId = () => Date.now() + Math.floor(Math.random() * 10000);
 
@@ -20,7 +22,8 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
 
     if (
       (editableMode === "readonly" || editableMode === "disabled") &&
-      (defaultValue === "" || defaultValue === null)
+      (defaultValue === "" || defaultValue === null) &&
+      selectedOption?.inputType !== "checkbox"
     ) {
       newErrors.defaultValue = "Default value is required.";
     }
@@ -68,7 +71,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 transition-opacity duration-500 ${
         isOpen ? "opacity-100 visible" : "opacity-0 invisible"
       }`}
     >
@@ -152,18 +155,22 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
         {(editableMode === "readonly" || editableMode === "disabled") && (
           <div className="mt-4">
             {selectedOption?.inputType === "checkbox" ? (
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={!!defaultValue}
+              <div className="flex gap-1.5">
+                <label className="block font-medium">Default Value</label>
+                <CheckboxField
+                  checked={defaultValue}
                   onChange={(e) => setDefaultValue(e.target.checked)}
+                  className={`${
+                    editableMode === "disabled" || editableMode === "readonly"
+                      ? "!cursor-pointer"
+                      : ""
+                  }`}
                 />
-                Default Value
-              </label>
+              </div>
             ) : selectedOption?.inputType === "date" ? (
               <>
                 <label className="block font-medium">Default Value</label>
-                <input
+                <InputField
                   type="date"
                   value={defaultValue}
                   onChange={(e) => setDefaultValue(e.target.value)}
@@ -172,10 +179,23 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
                   }`}
                 />
               </>
+            ) : selectedOption?.inputType === "number" ? (
+              <>
+                <label className="block font-medium">Default Value</label>
+                <InputField
+                  type="number"
+                  value={defaultValue}
+                  onChange={(e) => setDefaultValue(e.target.value)}
+                  placeholder="Enter default value"
+                  className={`border rounded-md p-4 w-full focus:outline-none ${
+                    errors.defaultValue ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+              </>
             ) : (
               <>
                 <label className="block font-medium">Default Value</label>
-                <input
+                <InputField
                   type="text"
                   value={defaultValue}
                   onChange={(e) => setDefaultValue(e.target.value)}
@@ -194,7 +214,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
 
         <div className="mt-4">
           <label className="block font-medium">Placeholder (optional)</label>
-          <input
+          <InputField
             type="text"
             value={placeholder}
             onChange={(e) => setPlaceholder(e.target.value)}

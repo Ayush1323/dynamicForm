@@ -1,4 +1,4 @@
-function CheckboxField({ checked, onChange, editableMode, error }) {
+function CheckboxField({ checked, onChange, editableMode, error, className }) {
   return (
     <input
       type="checkbox"
@@ -7,6 +7,7 @@ function CheckboxField({ checked, onChange, editableMode, error }) {
       readOnly={editableMode === "readonly"}
       disabled={editableMode === "disabled"}
       className={`border w-5 h-5 border-gray-300 rounded-md 
+        ${className}
         ${
           editableMode == "disabled" || editableMode == "readonly"
             ? "bg-gray-100 cursor-not-allowed"

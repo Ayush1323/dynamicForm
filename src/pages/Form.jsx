@@ -48,7 +48,7 @@ function Form({
           formState[field.key] === undefined ||
           (field.inputType === "checkbox" && !formState[field.key]);
 
-        if (isEmpty) {
+        if (isEmpty && field.inputType !== "checkbox") {
           if (showAll || touched[field.key]) {
             newErrors[field.key] = `${field.label} is required.`;
           }
@@ -188,23 +188,23 @@ function Form({
                 isRequired={field.isRequired}
                 error={errors[field.key]}
               />
-                <button
-                  type="button"
-                  onClick={() =>
-                    setEditField({
-                      ...field,
-                      value: formState[field.key],
-                    })
-                  }
-                  className="ml-2 text-sm text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                >
-                  <img
-                    src="/public/images/edit-icon.png"
-                    alt="Edit Icon"
-                    height={28}
-                    width={28}
-                  />
-                </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setEditField({
+                    ...field,
+                    value: formState[field.key],
+                  })
+                }
+                className="ml-2 text-sm text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+              >
+                <img
+                  src="/public/images/edit-icon.png"
+                  alt="Edit Icon"
+                  height={28}
+                  width={28}
+                />
+              </button>
             </div>
 
             {renderInput(field)}

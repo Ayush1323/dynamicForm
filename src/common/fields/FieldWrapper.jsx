@@ -6,7 +6,6 @@ function FieldWrapper({ label, isRequired, children }) {
         {isRequired && <span className="text-red-500">*</span>}
       </label>
       {children}
-      {/* {error && <span className="text-red-500 text-sm">{error}</span>} */}
     </div>
   );
 }

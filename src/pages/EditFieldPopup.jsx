@@ -161,7 +161,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 transition ${
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 transition-opacity duration-500 ${
         isOpen ? "opacity-100 visible" : "opacity-0 invisible"
       }`}
     >
@@ -239,7 +239,10 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
           </div>
 
           <div className="flex justify-end gap-2 mt-4">
-            <button onClick={onClose} className="px-4 py-2 border rounded cursor-pointer">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 border rounded cursor-pointer"
+            >
               Cancel
             </button>
             <button
