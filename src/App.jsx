@@ -87,8 +87,8 @@ function App() {
 
   return (
     <div>
-      <div className="flex justify-center items-center text-2xl mt-10 text-black font-bold">
-        Dynamic Form
+      <div className="flex justify-center items-center text-4xl mt-10 text-blue-900 font-bold">
+        Dynamic Form Builder
       </div>
 
       {forms.map((form, index) => {
@@ -100,7 +100,7 @@ function App() {
             className="mt-10 p-9 bg-white shadow border border-black/10 rounded-2xl m-9"
           >
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Form {index + 1}</h2>
+              <h2 className="text-lg font-semibold">Form</h2>
               <Button
                 type="button"
                 onClick={() => toggleCollapse(form.id)}

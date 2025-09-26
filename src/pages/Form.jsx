@@ -166,7 +166,7 @@ function Form({
     <>
       <form
         onSubmit={handleSubmit}
-        className="grid grid-cols-4 gap-4 border border-gray-300 p-4 rounded-lg mb-6"
+        className="grid grid-cols-4 gap-4 border border-gray-200 p-4 rounded-lg"
       >
         <h2 className="col-span-4 font-semibold text-lg mb-2">
           Form {currentIndex}
@@ -212,7 +212,6 @@ function Form({
         ))}
 
         <div className="col-span-4 flex items-center gap-2 justify-end">
-          <Button type="submit" buttonLabel="Submit" />
           <Button
             buttonLabel="Add Field"
             onClick={() => setShowAddFieldPopup(true)}
@@ -223,6 +222,7 @@ function Form({
             onClick={() => onAddInnerForm(formId)}
           />
         </div>
+        <Button type="submit" buttonLabel="Submit" onClick={handleSubmit} />
       </form>
 
       {innerForms.map((inner, index) => (
