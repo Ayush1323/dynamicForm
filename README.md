@@ -1,12 +1,67 @@
-# React + Vite
+# Dynamic Form 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+In this user can manage the multiple Dynamic nested forms in which user can manange and edit the form fields as per the requirement.
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Make sure you have installed Node.JS on your system or You can download from the official website : **(https://nodejs.org/en/download)**
 
-## Expanding the ESLint configuration
+# Project Installation and Setup Instructions
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Dynamic Form in which using of "React JS" .
+
+Install the whole setup from the Git Repository using these steps.
+
+**Step 1** : Colne the file from the repo and write in terminal
+
+            "git clone https://github.com/Ayush1323/dynamicForm.git"
+
+**Step 2** : Check the latest version of Node JS.
+
+            "node -v"
+
+**Step 3** : Need to check the path of your colned project
+
+            "cd my-project"
+
+**Step 4** : Installing the project using:
+
+            "npm install" or "npm i"
+
+**Step 5** : Run the Project using:
+
+            "npm run dev"
+
+# GIT Suggestion
+
+**While you run the project you are on the main branch and now follow the below steps to make you branch**
+
+**Step 1** : Take the latest pull using
+
+            "git pull"
+
+**Step 2** : Then make a new branch using
+
+            "git checkout -b <your branch Name>"
+
+**Step 3** : Then Run the project again.
+
+# How to Push Code for the First Time
+
+If you are a first-time contributor, follow these steps to push your code to the repository:
+
+**Step 1** : Add your changes to staging
+
+            git add .
+
+**Step 2** : Commit your changes with a meaningful message
+
+            git commit -m "Your commit message"
+
+**Step 3** : Push your branch to the remote repository
+
+            git push origin <your branch Name>
+
+**Step 4** : Create a Pull Request on GitHub to merge your changes into the main branch.
+
+> **Note:** Make sure you are pushing to your own branch, not directly to `main`.
