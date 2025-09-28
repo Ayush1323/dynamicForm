@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 import Button from "./common/Button";
 import Form from "./pages/Form";
@@ -14,8 +14,13 @@ function App() {
       innerForms: [],
     },
   ]);
-
   const [collapsedFormIds, setCollapsedFormIds] = useState([]);
+
+  const formValidators = useRef({});
+
+  const registerFormValidator = (formId, fn) => {
+    formValidators.current[formId] = fn;
+  };
 
   const toggleCollapse = (formId) => {
     setCollapsedFormIds((prev) =>
@@ -85,6 +90,31 @@ function App() {
     setForms((prev) => updateForms(prev));
   };
 
+  const handleSubmitAll = () => {
+    const results = Object.values(formValidators.current).map((fn) => fn(true));
+    const isValid = results.every((r) => r.isValid);
+
+    if (!isValid) {
+      console.error("Validation failed!");
+      return;
+    }
+
+    console.log("Final Forms Data:", results.map((r) => r.data));
+  };
+
+  const handleDeleteForm = (targetFormId) => {
+    const updateForms = (items) =>
+      items
+        .filter((form) => form.id !== targetFormId) // remove matching form
+        .map((form) => ({
+          ...form,
+          innerForms: updateForms(form.innerForms), // check inside innerForms too
+        }));
+  
+    setForms((prev) => updateForms(prev));
+  };
+  
+
   return (
     <div>
       <div className="flex justify-center items-center text-4xl mt-10 text-blue-900 font-bold">
@@ -119,14 +149,17 @@ function App() {
                 onUpdateFieldValue={handleUpdateFieldValue}
                 forms={forms}
                 formIndex={index + 1}
+                registerFormValidator={registerFormValidator}
+                onDeleteForm={handleDeleteForm}
               />
             )}
           </div>
         );
       })}
 
-      <div className="flex p-9 justify-end items-end w-full">
+      <div className="flex p-9 justify-end items-end w-full gap-4">
         <Button buttonLabel="Add Form" onClick={handleAddForm} />
+        <Button buttonLabel="Submit All" onClick={handleSubmitAll} />
       </div>
     </div>
   );

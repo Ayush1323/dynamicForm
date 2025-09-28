@@ -84,6 +84,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
         </div>
 
         <div className="mt-4">
+          <label className="block font-medium">Field Type</label>
           <select
             value={selectedKey}
             onChange={(e) => {
@@ -227,7 +228,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
           buttonLabel="Submit"
           type="button"
           onClick={handleSubmit}
-          className="w-full mt-5 bg-purple-300 hover:bg-purple-400"
+          className="w-full mt-5"
         />
       </div>
     </div>

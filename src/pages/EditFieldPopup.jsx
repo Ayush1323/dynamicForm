@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Button from "../common/Button";
 
 const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
   const [label, setLabel] = useState("");
@@ -245,12 +246,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
             >
               Cancel
             </button>
-            <button
-              onClick={handleSave}
-              className="px-6 py-2 bg-blue-500 text-white rounded cursor-pointer"
-            >
-              Save
-            </button>
+            <Button buttonLabel="Save" onClick={handleSave} className="px-6"/>
           </div>
         </div>
       </div>
