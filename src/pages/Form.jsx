@@ -173,16 +173,22 @@ function Form({
 
   return (
     <div className="border border-gray-200 p-4 rounded-lg">
-        <div className="flex justify-between items-center w-full">
+      <div className="flex justify-between items-center w-full">
         <h2 className="col-span-4 font-semibold text-lg mb-2">
           Form {currentIndex}
         </h2>
-        <Button
-          type="button"
+        <div
+          className="cursor-pointer h-10 w-10 flex items-center justify-center rounded-full bg-blue-900 hover:opacity-70"
           onClick={() => onDeleteForm(formId)}
-          buttonLabel="Delete"
-        />
+        >
+          <img
+            src="/images/delete-icon.png"
+            alt="icon-delete"
+            height={24}
+            width={24}
+          />
         </div>
+      </div>
       <div className="grid grid-cols-4 gap-4 mt-5 p-4 rounded-lg">
         {fields.map((field) => (
           <div key={field.id} className="flex flex-col gap-1.5 relative group">
@@ -204,7 +210,7 @@ function Form({
                 className="ml-2 text-sm text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
               >
                 <img
-                  src="/public/images/edit-icon.png"
+                  src="/images/edit-icon.png"
                   alt="Edit Icon"
                   height={28}
                   width={28}

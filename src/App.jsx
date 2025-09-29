@@ -95,25 +95,26 @@ function App() {
     const isValid = results.every((r) => r.isValid);
 
     if (!isValid) {
-      console.error("Validation failed!");
       return;
     }
 
-    console.log("Final Forms Data:", results.map((r) => r.data));
+    console.log(
+      "Final Forms Data:",
+      results.map((r) => r.data)
+    );
   };
 
   const handleDeleteForm = (targetFormId) => {
     const updateForms = (items) =>
       items
-        .filter((form) => form.id !== targetFormId) // remove matching form
+        .filter((form) => form.id !== targetFormId)
         .map((form) => ({
           ...form,
-          innerForms: updateForms(form.innerForms), // check inside innerForms too
+          innerForms: updateForms(form.innerForms), 
         }));
-  
+
     setForms((prev) => updateForms(prev));
   };
-  
 
   return (
     <div>
