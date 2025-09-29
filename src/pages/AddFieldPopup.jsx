@@ -33,7 +33,8 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (!validate()) return;
 
     const selectedOption = INPUT_TYPES.find((opt) => opt.key === selectedKey);
@@ -84,153 +85,156 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
           </div>
         </div>
 
-        <div className="mt-4">
-          <CommonLabel label="Field Type" />
-          <select
-            value={selectedKey}
-            onChange={(e) => {
-              setSelectedKey(e.target.value);
-              setErrors((prev) => ({ ...prev, selectedKey: "" }));
-            }}
-            className={`border rounded-md py-4 px-2 w-full focus:outline-gray-200 cursor-pointer ${
-              errors.selectedKey ? "!border-red-500" : "border-gray-300"
-            }`}
-          >
-            <option value="">Select Field Type</option>
-            {INPUT_TYPES?.map((opt) => (
-              <option key={opt.key} value={opt.key}>
-                {opt.key}
-              </option>
-            ))}
-          </select>
-          {errors.selectedKey && (
-            <p className="text-red-500 text-sm mt-1">{errors.selectedKey}</p>
-          )}
-        </div>
-
-        <div className="mt-4">
-          <CommonLabel label="Field Label" />
-          <input
-            value={label}
-            onChange={(e) => {
-              setLabel(e.target.value);
-              setErrors((prev) => ({ ...prev, label: "" }));
-            }}
-            type="text"
-            placeholder="Field Label"
-            className={`border rounded-md py-3 px-3 w-full capitalize focus:outline-none ${
-              errors.label ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.label && (
-            <p className="text-red-500 text-sm mt-1">{errors.label}</p>
-          )}
-        </div>
-
-        <label className="flex items-center gap-2 mt-4 cursor-pointer w-fit">
-          <input
-            type="checkbox"
-            checked={isRequired}
-            onChange={(e) => setIsRequired(e.target.checked)}
-          />
-          Required
-        </label>
-
-        <label className="flex flex-col gap-2 mt-4">
-          <span className="font-medium">Editable Mode</span>
-          <select
-            value={editableMode}
-            onChange={(e) => {
-              setEditableMode(e.target.value);
-              setErrors((prev) => ({ ...prev, defaultValue: "" }));
-            }}
-            className="border rounded-md py-4 px-2 w-full focus:outline-gray-200 cursor-pointer border-gray-300"
-          >
-            <option value="">Default Mode</option>
-            <option value="readonly">Read Only</option>
-            <option value="disabled">Disabled</option>
-          </select>
-        </label>
-
-        {(editableMode === "readonly" || editableMode === "disabled") && (
+        <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            {selectedOption?.inputType === "checkbox" ? (
-              <div className="flex gap-1.5">
-                <label className="font-medium">Default Value</label>
-                <CheckboxField
-                  checked={defaultValue}
-                  onChange={(e) => setDefaultValue(e.target.checked)}
-                  className={`${
-                    editableMode === "disabled" || editableMode === "readonly"
-                      ? "!cursor-pointer"
-                      : ""
-                  }`}
-                />
-              </div>
-            ) : selectedOption?.inputType === "date" ? (
-              <>
-                <CommonLabel label="Default Value" />
-                <InputField
-                  type="date"
-                  value={defaultValue}
-                  onChange={(e) => setDefaultValue(e.target.value)}
-                  className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
-                    errors.defaultValue ? "border-red-500" : "border-gray-300"
-                  }`}
-                />
-              </>
-            ) : selectedOption?.inputType === "number" ? (
-              <>
-                <CommonLabel label="Default Value" />
-                <InputField
-                  type="number"
-                  value={defaultValue}
-                  onChange={(e) => setDefaultValue(e.target.value)}
-                  placeholder="Enter default value"
-                  className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
-                    errors.defaultValue ? "border-red-500" : "border-gray-300"
-                  }`}
-                />
-              </>
-            ) : (
-              <>
-                <CommonLabel label="Default Value" />
-                <InputField
-                  type="text"
-                  value={defaultValue}
-                  onChange={(e) => setDefaultValue(e.target.value)}
-                  placeholder="Enter default value"
-                  className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
-                    errors.defaultValue ? "border-red-500" : "border-gray-300"
-                  }`}
-                />
-              </>
-            )}
-            {errors.defaultValue && (
-              <p className="text-red-500 text-sm mt-1">{errors.defaultValue}</p>
+            <CommonLabel label="Field Type" />
+            <select
+              value={selectedKey}
+              onChange={(e) => {
+                setSelectedKey(e.target.value);
+                setErrors((prev) => ({ ...prev, selectedKey: "" }));
+              }}
+              className={`border rounded-md py-4 px-2 w-full focus:outline-gray-200 cursor-pointer ${
+                errors.selectedKey ? "!border-red-500" : "border-gray-300"
+              }`}
+            >
+              <option value="">Select Field Type</option>
+              {INPUT_TYPES?.map((opt) => (
+                <option key={opt.key} value={opt.key}>
+                  {opt.key}
+                </option>
+              ))}
+            </select>
+            {errors.selectedKey && (
+              <p className="text-red-500 text-sm mt-1">{errors.selectedKey}</p>
             )}
           </div>
-        )}
 
-        <div className="mt-4">
-          <label className="block font-medium mb-1">
-            Placeholder (optional)
+          <div className="mt-4">
+            <CommonLabel label="Field Label" />
+            <input
+              value={label}
+              onChange={(e) => {
+                setLabel(e.target.value);
+                setErrors((prev) => ({ ...prev, label: "" }));
+              }}
+              type="text"
+              placeholder="Field Label"
+              className={`border rounded-md py-3 px-3 w-full capitalize focus:outline-none ${
+                errors.label ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {errors.label && (
+              <p className="text-red-500 text-sm mt-1">{errors.label}</p>
+            )}
+          </div>
+
+          <label className="flex items-center gap-2 mt-4 cursor-pointer w-fit">
+            <input
+              type="checkbox"
+              checked={isRequired}
+              onChange={(e) => setIsRequired(e.target.checked)}
+            />
+            Required
           </label>
-          <InputField
-            type="text"
-            value={placeholder}
-            onChange={(e) => setPlaceholder(e.target.value)}
-            placeholder="Enter placeholder"
-            className="border rounded-md py-3 px-3 w-full focus:outline-none border-gray-300"
-          />
-        </div>
 
-        <Button
-          buttonLabel="Submit"
-          type="button"
-          onClick={handleSubmit}
-          className="w-full mt-5"
-        />
+          <label className="flex flex-col gap-2 mt-4">
+            <span className="font-medium">Editable Mode</span>
+            <select
+              value={editableMode}
+              onChange={(e) => {
+                setEditableMode(e.target.value);
+                setErrors((prev) => ({ ...prev, defaultValue: "" }));
+              }}
+              className="border rounded-md py-4 px-2 w-full focus:outline-gray-200 cursor-pointer border-gray-300"
+            >
+              <option value="">Default Mode</option>
+              <option value="readonly">Read Only</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </label>
+
+          {(editableMode === "readonly" || editableMode === "disabled") && (
+            <div className="mt-4">
+              {selectedOption?.inputType === "checkbox" ? (
+                <div className="flex gap-1.5">
+                  <label className="font-medium">Default Value</label>
+                  <CheckboxField
+                    checked={defaultValue}
+                    onChange={(e) => setDefaultValue(e.target.checked)}
+                    className={`${
+                      editableMode === "disabled" || editableMode === "readonly"
+                        ? "!cursor-pointer"
+                        : ""
+                    }`}
+                  />
+                </div>
+              ) : selectedOption?.inputType === "date" ? (
+                <>
+                  <CommonLabel label="Default Value" />
+                  <InputField
+                    type="date"
+                    value={defaultValue}
+                    onChange={(e) => setDefaultValue(e.target.value)}
+                    className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
+                      errors.defaultValue ? "border-red-500" : "border-gray-300"
+                    }`}
+                  />
+                </>
+              ) : selectedOption?.inputType === "number" ? (
+                <>
+                  <CommonLabel label="Default Value" />
+                  <InputField
+                    type="number"
+                    value={defaultValue}
+                    onChange={(e) => setDefaultValue(e.target.value)}
+                    placeholder="Enter default value"
+                    className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
+                      errors.defaultValue ? "border-red-500" : "border-gray-300"
+                    }`}
+                  />
+                </>
+              ) : (
+                <>
+                  <CommonLabel label="Default Value" />
+                  <InputField
+                    type="text"
+                    value={defaultValue}
+                    onChange={(e) => setDefaultValue(e.target.value)}
+                    placeholder="Enter default value"
+                    className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
+                      errors.defaultValue ? "border-red-500" : "border-gray-300"
+                    }`}
+                  />
+                </>
+              )}
+              {errors.defaultValue && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.defaultValue}
+                </p>
+              )}
+            </div>
+          )}
+
+          <div className="mt-4">
+            <label className="block font-medium mb-1">
+              Placeholder (optional)
+            </label>
+            <InputField
+              type="text"
+              value={placeholder}
+              onChange={(e) => setPlaceholder(e.target.value)}
+              placeholder="Enter placeholder"
+              className="border rounded-md py-3 px-3 w-full focus:outline-none border-gray-300"
+            />
+          </div>
+
+          <Button
+            buttonLabel="Submit"
+            type="submit"
+            className="w-full mt-5"
+          />
+        </form>
       </div>
     </div>
   );

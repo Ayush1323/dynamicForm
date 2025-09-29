@@ -44,7 +44,9 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = (event) => {
+    event.preventDefault();
+
     let newErrors = {};
 
     if (
@@ -172,66 +174,70 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <div>
-            <CommonLabel label="Field Label" />
-            <input
-              value={label}
-              onChange={handleLabelChange}
-              className={`w-full border rounded py-3 px-3 border-gray-300 ${
-                errors.label
-                  ? "border-red-500 focus:outline-none"
-                  : "focus:outline-gray-300"
-              }`}
-            />
-            {errors.label && (
-              <p className="text-red-500 text-sm mt-1">{errors.label}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="font-medium mb-1">Placeholder</label>
-            <input
-              value={placeholder}
-              onChange={(e) => setPlaceholder(e.target.value)}
-              className="w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-300"
-            />
-          </div>
-
-          <label className="flex items-center gap-2 cursor-pointer w-fit">
-            <input
-              type="checkbox"
-              checked={isRequired}
-              onChange={(e) => setIsRequired(e.target.checked)}
-            />
-            Required
-          </label>
-
-          <div>
-            <label className="block mb-1 font-medium">Editable Mode</label>
-            <select
-              value={editableMode}
-              onChange={(e) => handleEditableModeChange(e.target.value)}
-              className="border border-gray-300 rounded-md p-2 focus:outline-gray-200 cursor-pointer w-full"
-            >
-              <option value="editable">Default Mode</option>
-              <option value="readonly">Read Only</option>
-              <option value="disabled">Disabled</option>
-            </select>
-          </div>
-          <div>
+        <form onSubmit={handleSave}>
+          <div className="flex flex-col gap-3">
             <div>
-              {editableMode === "editable" ? (
-                <label className="block mb-1 font-medium">Default Value</label>
-              ) : (
-                <CommonLabel label="Default Value" />
+              <CommonLabel label="Field Label" />
+              <input
+                value={label}
+                onChange={handleLabelChange}
+                className={`w-full border rounded py-3 px-3 border-gray-300 ${
+                  errors.label
+                    ? "border-red-500 focus:outline-none"
+                    : "focus:outline-gray-300"
+                }`}
+              />
+              {errors.label && (
+                <p className="text-red-500 text-sm mt-1">{errors.label}</p>
               )}
             </div>
-            <div>{renderValueEditor()}</div>
-          </div>
 
-          <Button buttonLabel="Save" onClick={handleSave} className="mt-2" />
-        </div>
+            <div>
+              <label className="font-medium mb-1">Placeholder</label>
+              <input
+                value={placeholder}
+                onChange={(e) => setPlaceholder(e.target.value)}
+                className="w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-300"
+              />
+            </div>
+
+            <label className="flex items-center gap-2 cursor-pointer w-fit">
+              <input
+                type="checkbox"
+                checked={isRequired}
+                onChange={(e) => setIsRequired(e.target.checked)}
+              />
+              Required
+            </label>
+
+            <div>
+              <label className="block mb-1 font-medium">Editable Mode</label>
+              <select
+                value={editableMode}
+                onChange={(e) => handleEditableModeChange(e.target.value)}
+                className="border border-gray-300 rounded-md p-2 focus:outline-gray-200 cursor-pointer w-full"
+              >
+                <option value="editable">Default Mode</option>
+                <option value="readonly">Read Only</option>
+                <option value="disabled">Disabled</option>
+              </select>
+            </div>
+            <div>
+              <div>
+                {editableMode === "editable" ? (
+                  <label className="block mb-1 font-medium">
+                    Default Value
+                  </label>
+                ) : (
+                  <CommonLabel label="Default Value" />
+                )}
+              </div>
+              <div>{renderValueEditor()}</div>
+            </div>
+
+            <Button buttonLabel="Save" type="submit" className="mt-2" />
+          </div>
+        </form>
       </div>
     </div>
   );

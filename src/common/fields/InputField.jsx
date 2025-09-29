@@ -22,7 +22,9 @@ function InputField({
             ? "bg-gray-100 cursor-not-allowed"
             : ""
         }
-        ${error ? "border-red-500 focus:outline-none" : "focus:outline-gray-300"} `}
+        ${
+          error ? "border-red-500 focus:outline-none" : "focus:outline-gray-300"
+        } `}
       min={type === "number" ? 0 : undefined}
     />
   );
