@@ -194,7 +194,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
             <input
               value={placeholder}
               onChange={(e) => setPlaceholder(e.target.value)}
-              className="w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-400"
+              className="w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-300"
             />
           </div>
 
@@ -229,15 +229,8 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
             </div>
             <div>{renderValueEditor()}</div>
           </div>
-          <div className="flex justify-end gap-2 mt-4">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 border rounded cursor-pointer"
-            >
-              Cancel
-            </button>
-            <Button buttonLabel="Save" onClick={handleSave} className="px-6" />
-          </div>
+
+          <Button buttonLabel="Save" onClick={handleSave} className="mt-2" />
         </div>
       </div>
     </div>
