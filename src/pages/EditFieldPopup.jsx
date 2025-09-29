@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Button from "../common/Button";
+import CommonLabel from "../common/CommonLabel";
 
 const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
   const [label, setLabel] = useState("");
@@ -82,7 +83,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
             <textarea
               value={value}
               onChange={(e) => handleValueChange(e.target.value)}
-              className={`w-full border rounded p-2 border-gray-300 focus:outline-gray-400 ${
+              className={`w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-400 ${
                 errors.value ? "border-red-500" : ""
               }`}
               rows={3}
@@ -113,7 +114,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
               type="number"
               value={value}
               onChange={(e) => handleValueChange(e.target.value)}
-              className={`w-full border rounded p-2 border-gray-300 focus:outline-gray-400 ${
+              className={`w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-400 ${
                 errors.value ? "border-red-500" : ""
               }`}
               placeholder="Default range value"
@@ -130,7 +131,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
               type="date"
               value={value}
               onChange={(e) => handleValueChange(e.target.value)}
-              className={`w-full border rounded p-2 border-gray-300 focus:outline-gray-400 ${
+              className={`w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-400 ${
                 errors.value ? "border-red-500" : ""
               }`}
             />
@@ -146,7 +147,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
               type={field.inputType || "text"}
               value={value}
               onChange={(e) => handleValueChange(e.target.value)}
-              className={`w-full border rounded p-2 border-gray-300 focus:outline-gray-400 ${
+              className={`w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-400 ${
                 errors.value ? "border-red-500" : ""
               }`}
               placeholder="Default value"
@@ -166,7 +167,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
         isOpen ? "opacity-100 visible" : "opacity-0 invisible"
       }`}
     >
-      <div className="bg-white rounded-[20px] w-full max-w-[408px] shadow-lg p-4">
+      <div className="bg-white rounded-xl w-full max-w-[408px] shadow-lg p-4">
         <div className="flex justify-between items-center mb-4">
           <div className="text-center text-xl font-bold">Edit Field</div>
           <div onClick={onClose} className="text-center cursor-pointer">
@@ -175,30 +176,32 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
         </div>
 
         <div className="flex flex-col gap-3">
-          <label>
-            Label
+          <div>
+            <CommonLabel label="Field Label" />
             <input
               value={label}
               onChange={handleLabelChange}
-              className={`w-full border rounded p-2 border-gray-300 focus:outline-gray-400 ${
-                errors.label ? "border-red-500" : ""
+              className={`w-full border rounded py-3 px-3 border-gray-300 ${
+                errors.label
+                  ? "border-red-500 focus:outline-none"
+                  : "focus:outline-gray-300"
               }`}
             />
             {errors.label && (
               <p className="text-red-500 text-sm mt-1">{errors.label}</p>
             )}
-          </label>
+          </div>
 
-          <label>
-            Placeholder
+          <div>
+            <label className="font-medium mb-1">Placeholder</label>
             <input
               value={placeholder}
               onChange={(e) => setPlaceholder(e.target.value)}
-              className="w-full border rounded p-2 border-gray-300 focus:outline-gray-400"
+              className="w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-400"
             />
-          </label>
+          </div>
 
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-2 cursor-pointer w-fit">
             <input
               type="checkbox"
               checked={isRequired}
@@ -207,38 +210,28 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
             Required
           </label>
 
-          <div className="flex items-center gap-4">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={editableMode === "readonly"}
-                onChange={(e) =>
-                  handleEditableModeChange(
-                    e.target.checked ? "readonly" : "editable"
-                  )
-                }
-              />
-              Read Only
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={editableMode === "disabled"}
-                onChange={(e) =>
-                  handleEditableModeChange(
-                    e.target.checked ? "disabled" : "editable"
-                  )
-                }
-              />
-              Disabled
-            </label>
-          </div>
-
           <div>
-            <label className="block mb-1">Default Value</label>
-            {renderValueEditor()}
+            <label className="block mb-1 font-medium">Editable Mode</label>
+            <select
+              value={editableMode}
+              onChange={(e) => handleEditableModeChange(e.target.value)}
+              className="border border-gray-300 rounded-md p-2 focus:outline-gray-200 cursor-pointer w-full"
+            >
+              <option value="editable">Default Mode</option>
+              <option value="readonly">Read Only</option>
+              <option value="disabled">Disabled</option>
+            </select>
           </div>
-
+          <div>
+            <div>
+              {editableMode === "editable" ? (
+                <label className="block mb-1 font-medium">Default Value</label>
+              ) : (
+                <CommonLabel label="Default Value" />
+              )}
+            </div>
+            <div>{renderValueEditor()}</div>
+          </div>
           <div className="flex justify-end gap-2 mt-4">
             <button
               onClick={onClose}

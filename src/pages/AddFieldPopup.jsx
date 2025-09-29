@@ -76,7 +76,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
         isOpen ? "opacity-100 visible" : "opacity-0 invisible"
       }`}
     >
-      <div className="bg-white rounded-[20px] w-full max-w-[408px] shadow-lg p-4">
+      <div className="bg-white rounded-xl w-full max-w-[408px] shadow-lg p-4">
         <div className="flex justify-between items-center">
           <div className="text-center text-xl font-bold">Add Field</div>
           <div onClick={onClose} className="text-center cursor-pointer">
@@ -93,7 +93,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
               setErrors((prev) => ({ ...prev, selectedKey: "" }));
             }}
             className={`border rounded-md py-4 px-2 w-full focus:outline-gray-200 cursor-pointer ${
-              errors.selectedKey ? "border-red-500" : "border-gray-300"
+              errors.selectedKey ? "!border-red-500" : "border-gray-300"
             }`}
           >
             <option value="">Select Field Type</option>
@@ -118,7 +118,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
             }}
             type="text"
             placeholder="Field Label"
-            className={`border rounded-md py-4 px-3 w-full capitalize focus:outline-none ${
+            className={`border rounded-md py-3 px-3 w-full capitalize focus:outline-none ${
               errors.label ? "border-red-500" : "border-gray-300"
             }`}
           />
@@ -137,7 +137,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
         </label>
 
         <label className="flex flex-col gap-2 mt-4">
-          <span>Editable Mode:</span>
+          <span className="font-medium">Editable Mode</span>
           <select
             value={editableMode}
             onChange={(e) => {
@@ -156,7 +156,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
           <div className="mt-4">
             {selectedOption?.inputType === "checkbox" ? (
               <div className="flex gap-1.5">
-                <CommonLabel label="Default Value" />
+                <label className="font-medium">Default Value</label>
                 <CheckboxField
                   checked={defaultValue}
                   onChange={(e) => setDefaultValue(e.target.checked)}
@@ -174,7 +174,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
                   type="date"
                   value={defaultValue}
                   onChange={(e) => setDefaultValue(e.target.value)}
-                  className={`border rounded-md p-4 w-full focus:outline-none ${
+                  className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
                     errors.defaultValue ? "border-red-500" : "border-gray-300"
                   }`}
                 />
@@ -187,7 +187,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
                   value={defaultValue}
                   onChange={(e) => setDefaultValue(e.target.value)}
                   placeholder="Enter default value"
-                  className={`border rounded-md p-4 w-full focus:outline-none ${
+                  className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
                     errors.defaultValue ? "border-red-500" : "border-gray-300"
                   }`}
                 />
@@ -200,7 +200,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
                   value={defaultValue}
                   onChange={(e) => setDefaultValue(e.target.value)}
                   placeholder="Enter default value"
-                  className={`border rounded-md p-4 w-full focus:outline-none ${
+                  className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
                     errors.defaultValue ? "border-red-500" : "border-gray-300"
                   }`}
                 />
@@ -221,7 +221,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
             value={placeholder}
             onChange={(e) => setPlaceholder(e.target.value)}
             placeholder="Enter placeholder"
-            className="border rounded-md py-4 px-3 w-full focus:outline-none border-gray-300"
+            className="border rounded-md py-3 px-3 w-full focus:outline-none border-gray-300"
           />
         </div>
 

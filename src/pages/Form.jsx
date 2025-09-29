@@ -172,6 +172,24 @@ function Form({
     }
   };
 
+  const onEscape = (event) => {
+    if (event.key === "Escape") {
+      if (showAddFieldPopup) {
+        setShowAddFieldPopup(false);
+      }
+      if (editField) {
+        setEditField(null);
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", onEscape);
+    return () => {
+      window.removeEventListener("keydown", onEscape);
+    };
+  }, [showAddFieldPopup, editField]);
+
   return (
     <div className="border border-gray-200 p-4 rounded-lg">
       <div className="flex justify-between items-center w-full">
