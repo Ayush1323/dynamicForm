@@ -147,9 +147,13 @@ function App() {
         return (
           <div
             key={form.id}
-            className="mt-10 p-9 bg-white shadow border border-black/10 rounded-2xl m-9"
+            className="mt-10 p-9 bg-white shadow border border-black/10 rounded-2xl m-9 flex flex-col"
           >
-            <div className="flex justify-between items-center mb-4">
+            <div
+              className={`flex justify-between items-center ${
+                isCollapsed ? "" : "mb-4"
+              }`}
+            >
               <h2 className="text-lg font-semibold">Form</h2>
               <Button
                 type="button"
@@ -159,7 +163,11 @@ function App() {
               />
             </div>
 
-            {!isCollapsed && (
+            <div
+              className={`transition-max-height duration-500 ease-in-out overflow-hidden ${
+                isCollapsed ? "max-h-0 opacity-0" : "h-auto opacity-100"
+              }`}
+            >
               <Form
                 formId={form.id}
                 fields={form.data}
@@ -173,7 +181,7 @@ function App() {
                 onDeleteForm={handleDeleteForm}
                 onDeleteField={handleDeleteField}
               />
-            )}
+            </div>
           </div>
         );
       })}
