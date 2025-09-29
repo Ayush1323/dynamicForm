@@ -246,7 +246,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
             >
               Cancel
             </button>
-            <Button buttonLabel="Save" onClick={handleSave} className="px-6"/>
+            <Button buttonLabel="Save" onClick={handleSave} className="px-6" />
           </div>
         </div>
       </div>

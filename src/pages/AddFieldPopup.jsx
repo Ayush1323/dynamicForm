@@ -3,6 +3,7 @@ import Button from "../common/Button";
 import { INPUT_TYPES } from "../utils/typesOfInput";
 import CheckboxField from "../common/fields/CheckboxField";
 import InputField from "../common/fields/InputField";
+import CommonLabel from "../common/CommonLabel";
 
 const generateId = () => Date.now() + Math.floor(Math.random() * 10000);
 
@@ -84,14 +85,14 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
         </div>
 
         <div className="mt-4">
-          <label className="block font-medium">Field Type</label>
+          <CommonLabel label="Field Type" />
           <select
             value={selectedKey}
             onChange={(e) => {
               setSelectedKey(e.target.value);
               setErrors((prev) => ({ ...prev, selectedKey: "" }));
             }}
-            className={`border rounded-md p-4 w-full focus:outline-none cursor-pointer ${
+            className={`border rounded-md py-4 px-2 w-full focus:outline-gray-200 cursor-pointer ${
               errors.selectedKey ? "border-red-500" : "border-gray-300"
             }`}
           >
@@ -108,7 +109,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
         </div>
 
         <div className="mt-4">
-          <label className="block font-medium">Field Label</label>
+          <CommonLabel label="Field Label" />
           <input
             value={label}
             onChange={(e) => {
@@ -117,7 +118,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
             }}
             type="text"
             placeholder="Field Label"
-            className={`border rounded-md p-4 w-full capitalize focus:outline-none ${
+            className={`border rounded-md py-4 px-3 w-full capitalize focus:outline-none ${
               errors.label ? "border-red-500" : "border-gray-300"
             }`}
           />
@@ -126,38 +127,36 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
           )}
         </div>
 
-        <div className="flex items-center gap-4 mt-4">
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={isRequired}
-              onChange={(e) => setIsRequired(e.target.checked)}
-            />
-            Required
-          </label>
+        <label className="flex items-center gap-2 mt-4 cursor-pointer w-fit">
+          <input
+            type="checkbox"
+            checked={isRequired}
+            onChange={(e) => setIsRequired(e.target.checked)}
+          />
+          Required
+        </label>
 
-          <label className="flex items-center gap-2">
-            <span>Editable Mode:</span>
-            <select
-              value={editableMode}
-              onChange={(e) => {
-                setEditableMode(e.target.value);
-                setErrors((prev) => ({ ...prev, defaultValue: "" }));
-              }}
-              className="border rounded-md p-1 cursor-pointer"
-            >
-              <option value="">Default Mode</option>
-              <option value="readonly">Read Only</option>
-              <option value="disabled">Disabled</option>
-            </select>
-          </label>
-        </div>
+        <label className="flex flex-col gap-2 mt-4">
+          <span>Editable Mode:</span>
+          <select
+            value={editableMode}
+            onChange={(e) => {
+              setEditableMode(e.target.value);
+              setErrors((prev) => ({ ...prev, defaultValue: "" }));
+            }}
+            className="border rounded-md py-4 px-2 w-full focus:outline-gray-200 cursor-pointer border-gray-300"
+          >
+            <option value="">Default Mode</option>
+            <option value="readonly">Read Only</option>
+            <option value="disabled">Disabled</option>
+          </select>
+        </label>
 
         {(editableMode === "readonly" || editableMode === "disabled") && (
           <div className="mt-4">
             {selectedOption?.inputType === "checkbox" ? (
               <div className="flex gap-1.5">
-                <label className="block font-medium">Default Value</label>
+                <CommonLabel label="Default Value" />
                 <CheckboxField
                   checked={defaultValue}
                   onChange={(e) => setDefaultValue(e.target.checked)}
@@ -170,7 +169,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
               </div>
             ) : selectedOption?.inputType === "date" ? (
               <>
-                <label className="block font-medium">Default Value</label>
+                <CommonLabel label="Default Value" />
                 <InputField
                   type="date"
                   value={defaultValue}
@@ -182,7 +181,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
               </>
             ) : selectedOption?.inputType === "number" ? (
               <>
-                <label className="block font-medium">Default Value</label>
+                <CommonLabel label="Default Value" />
                 <InputField
                   type="number"
                   value={defaultValue}
@@ -195,7 +194,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
               </>
             ) : (
               <>
-                <label className="block font-medium">Default Value</label>
+                <CommonLabel label="Default Value" />
                 <InputField
                   type="text"
                   value={defaultValue}
@@ -214,13 +213,15 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
         )}
 
         <div className="mt-4">
-          <label className="block font-medium">Placeholder (optional)</label>
+          <label className="block font-medium mb-1">
+            Placeholder (optional)
+          </label>
           <InputField
             type="text"
             value={placeholder}
             onChange={(e) => setPlaceholder(e.target.value)}
             placeholder="Enter placeholder"
-            className="border rounded-md p-4 w-full focus:outline-none border-gray-300"
+            className="border rounded-md py-4 px-3 w-full focus:outline-none border-gray-300"
           />
         </div>
 

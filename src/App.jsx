@@ -105,13 +105,32 @@ function App() {
   };
 
   const handleDeleteForm = (targetFormId) => {
+    console.log("Delete Form ID:", targetFormId);
     const updateForms = (items) =>
       items
         .filter((form) => form.id !== targetFormId)
         .map((form) => ({
           ...form,
-          innerForms: updateForms(form.innerForms), 
+          innerForms: updateForms(form.innerForms),
         }));
+
+    setForms((prev) => updateForms(prev));
+  };
+
+  const handleDeleteField = (formId, fieldId) => {
+    const updateForms = (items) =>
+      items.map((form) => {
+        if (form.id === formId) {
+          return {
+            ...form,
+            data: form.data.filter((f) => f.id !== fieldId),
+          };
+        }
+        if (form.innerForms.length > 0) {
+          return { ...form, innerForms: updateForms(form.innerForms) };
+        }
+        return form;
+      });
 
     setForms((prev) => updateForms(prev));
   };
@@ -152,6 +171,7 @@ function App() {
                 formIndex={index + 1}
                 registerFormValidator={registerFormValidator}
                 onDeleteForm={handleDeleteForm}
+                onDeleteField={handleDeleteField}
               />
             )}
           </div>

@@ -19,6 +19,7 @@ function Form({
   parentIndex = "",
   registerFormValidator,
   onDeleteForm,
+  onDeleteField,
 }) {
   const [formState, setFormState] = useState(
     Object.fromEntries(
@@ -191,31 +192,60 @@ function Form({
       </div>
       <div className="grid grid-cols-4 gap-4 mt-5 p-4 rounded-lg">
         {fields.map((field) => (
-          <div key={field.id} className="flex flex-col gap-1.5 relative group">
-            <div
-              className="flex items-center justify-between gap-1 cursor-pointer"
-              onClick={() => handleEditField(field)}
-            >
+          <div key={field.id} className="flex flex-col gap-0.5 relative group">
+            <div className="flex items-center justify-between gap-1">
               <FieldWrapper
                 label={field.label}
                 isRequired={field.isRequired}
                 error={errors[field.key]}
               />
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditField(field);
-                }}
-                className="ml-2 text-sm text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-              >
-                <img
-                  src="/images/edit-icon.png"
-                  alt="Edit Icon"
-                  height={28}
-                  width={28}
-                />
-              </button>
+              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditField(field);
+                  }}
+                  className="cursor-pointer w-6 h-6 flex items-center justify-center rounded-full hover:opacity-70 bg-blue-900"
+                >
+                  <img
+                    src="/images/pencil.png"
+                    alt="Edit Icon"
+                    height={14}
+                    width={14}
+                  />
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDeleteField(formId, field.id);
+                    setFormState((prev) => {
+                      const newState = { ...prev };
+                      delete newState[field.key];
+                      return newState;
+                    });
+                    setErrors((prev) => {
+                      const newErr = { ...prev };
+                      delete newErr[field.key];
+                      return newErr;
+                    });
+                    setTouched((prev) => {
+                      const newTouched = { ...prev };
+                      delete newTouched[field.key];
+                      return newTouched;
+                    });
+                  }}
+                  className="cursor-pointer w-6 h-6 flex items-center justify-center rounded-full hover:opacity-70 bg-blue-900"
+                >
+                  <img
+                    src="/images/delete-icon.png"
+                    alt="delete-icon"
+                    height={16}
+                    width={16}
+                  />
+                </button>
+              </div>
             </div>
 
             {renderInput(field)}
