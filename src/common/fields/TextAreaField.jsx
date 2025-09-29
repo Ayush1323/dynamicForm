@@ -12,7 +12,7 @@ function TextAreaField({ value, onChange, placeholder, editableMode, error }) {
             ? "bg-gray-100 cursor-not-allowed"
             : ""
         } 
-        ${error ? "border-red-500" : ""}`}
+        ${error ? "border-red-500 focus:outline-none" : "focus:outline-gray-300"}`}
       rows={3}
     />
   );

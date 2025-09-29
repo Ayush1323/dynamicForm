@@ -15,14 +15,14 @@ function InputField({
       placeholder={placeholder}
       readOnly={editableMode === "readonly"}
       disabled={editableMode === "disabled"}
-      className={`border border-gray-300 rounded-md p-2 focus:outline-none
+      className={`border border-gray-300 rounded-md p-2 
         ${className}
         ${
           editableMode == "disabled" || editableMode == "readonly"
             ? "bg-gray-100 cursor-not-allowed"
             : ""
         }
-        ${error ? "border-red-500" : ""} `}
+        ${error ? "border-red-500 focus:outline-none" : "focus:outline-gray-300"} `}
       min={type === "number" ? 0 : undefined}
     />
   );

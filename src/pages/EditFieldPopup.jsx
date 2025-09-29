@@ -95,16 +95,13 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
         );
       case "checkbox":
         return (
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-2 cursor-pointer w-fit">
             <input
               type="checkbox"
               checked={!!value}
               onChange={(e) => handleValueChange(e.target.checked)}
             />
             Checked (default)
-            {errors.value && (
-              <p className="text-red-500 text-sm mt-1">{errors.value}</p>
-            )}
           </label>
         );
       case "range":
