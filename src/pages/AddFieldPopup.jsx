@@ -16,6 +16,8 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
   const [defaultValue, setDefaultValue] = useState("");
   const [errors, setErrors] = useState({});
 
+  const selectedOption = INPUT_TYPES.find((opt) => opt.key === selectedKey);
+
   const validate = () => {
     const newErrors = {};
     if (!selectedKey) newErrors.selectedKey = "Please select a field type";
@@ -29,6 +31,22 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
       newErrors.defaultValue = "Default value is required.";
     }
 
+    // email validation
+    if (selectedOption?.inputType === "email" && defaultValue) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(defaultValue)) {
+        newErrors.defaultValue = "Please enter a valid email address.";
+      }
+    }
+
+    // number validation
+    if (selectedOption?.inputType === "number" && defaultValue) {
+      const numberRegex = /^[0-9]+$/;
+      if (!numberRegex.test(defaultValue)) {
+        newErrors.defaultValue = "Only digits are allowed.";
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -37,14 +55,10 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
     e.preventDefault();
     if (!validate()) return;
 
-    const selectedOption = INPUT_TYPES.find((opt) => opt.key === selectedKey);
-
-    let valueToSet;
-    if (selectedOption?.inputType === "checkbox") {
-      valueToSet = !!defaultValue;
-    } else {
-      valueToSet = defaultValue || "";
-    }
+    const valueToSet =
+      selectedOption?.inputType === "checkbox"
+        ? !!defaultValue
+        : defaultValue || "";
 
     const newField = {
       id: generateId(),
@@ -68,8 +82,6 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
     setDefaultValue("");
     setErrors({});
   };
-
-  const selectedOption = INPUT_TYPES.find((opt) => opt.key === selectedKey);
 
   return (
     <div
@@ -162,56 +174,28 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
                   <CheckboxField
                     checked={defaultValue}
                     onChange={(e) => setDefaultValue(e.target.checked)}
-                    className={`${
-                      editableMode === "disabled" || editableMode === "readonly"
-                        ? "!cursor-pointer"
-                        : ""
-                    }`}
                   />
                 </div>
-              ) : selectedOption?.inputType === "date" ? (
-                <>
-                  <CommonLabel label="Default Value" />
-                  <InputField
-                    type="date"
-                    value={defaultValue}
-                    onChange={(e) => setDefaultValue(e.target.value)}
-                    className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
-                      errors.defaultValue ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                </>
-              ) : selectedOption?.inputType === "number" ? (
-                <>
-                  <CommonLabel label="Default Value" />
-                  <InputField
-                    type="number"
-                    value={defaultValue}
-                    onChange={(e) => setDefaultValue(e.target.value)}
-                    placeholder="Enter default value"
-                    className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
-                      errors.defaultValue ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                </>
               ) : (
                 <>
                   <CommonLabel label="Default Value" />
                   <InputField
-                    type="text"
+                    type={selectedOption?.inputType || "text"}
                     value={defaultValue}
                     onChange={(e) => setDefaultValue(e.target.value)}
                     placeholder="Enter default value"
                     className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
-                      errors.defaultValue ? "border-red-500" : "border-gray-300"
+                      errors.defaultValue
+                        ? "border-red-500"
+                        : "border-gray-300"
                     }`}
                   />
+                  {errors.defaultValue && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.defaultValue}
+                    </p>
+                  )}
                 </>
-              )}
-              {errors.defaultValue && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.defaultValue}
-                </p>
               )}
             </div>
           )}
@@ -229,11 +213,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
             />
           </div>
 
-          <Button
-            buttonLabel="Submit"
-            type="submit"
-            className="w-full mt-5"
-          />
+          <Button buttonLabel="Submit" type="submit" className="w-full mt-5" />
         </form>
       </div>
     </div>

@@ -52,9 +52,12 @@ function Form({
 
   const validateAndCollect = (showAll = false) => {
     let newErrors = {};
+
     fields.forEach((field) => {
+      const value = formState[field.key];
+
+      // required field validation
       if (field.isRequired) {
-        const value = formState[field.key];
         const isEmpty =
           value === "" ||
           value === null ||
@@ -67,13 +70,22 @@ function Form({
           }
         }
       }
+
+      // email validation
+      if (field.inputType === "email" && value) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          if (showAll || touched[field.key]) {
+            newErrors[field.key] = "Please enter a valid email address.";
+          }
+        }
+      }
     });
+
     setErrors(newErrors);
 
     const innerResults = innerForms.map((inner) =>
-      inner.validator
-        ? inner.validator(showAll)
-        : { isValid: true, data: inner }
+      inner.validator ? inner.validator(showAll) : { isValid: true, data: inner }
     );
 
     return {

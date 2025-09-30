@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Button from "../common/Button";
 import CommonLabel from "../common/CommonLabel";
 
@@ -51,13 +51,28 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
 
     if (
       (editableMode === "readonly" || editableMode === "disabled") &&
-      !value
+      !value &&
+      field.inputType !== "checkbox"
     ) {
       newErrors.value = "Default value is required.";
     }
 
     if (!label.trim()) {
       newErrors.label = "Label is required";
+    }
+
+    if (field.inputType === "email" && value) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        newErrors.value = "Please enter a valid email address.";
+      }
+    }
+
+    if (field.inputType === "number" && value) {
+      const numberRegex = /^[0-9]+$/;
+      if (!numberRegex.test(value)) {
+        newErrors.value = "Only digits are allowed.";
+      }
     }
 
     if (Object.keys(newErrors).length > 0) {

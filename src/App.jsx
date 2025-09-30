@@ -15,7 +15,6 @@ function App() {
     },
   ]);
   const [collapsedFormIds, setCollapsedFormIds] = useState([]);
-
   const formValidators = useRef({});
 
   const registerFormValidator = (formId, fn) => {
@@ -91,7 +90,13 @@ function App() {
   };
 
   const handleSubmitAll = () => {
-    const results = Object.values(formValidators.current).map((fn) => fn(true));
+    const validators = Object.values(formValidators.current);
+
+    if (validators.length === 0) {
+      return;
+    }
+
+    const results = validators.map((fn) => fn(true));
     const isValid = results.every((r) => r.isValid);
 
     if (!isValid) {
@@ -105,16 +110,26 @@ function App() {
   };
 
   const handleDeleteForm = (targetFormId) => {
-    console.log("Delete Form ID:", targetFormId);
-    const updateForms = (items) =>
+    const removeFormRecursively = (items) =>
       items
         .filter((form) => form.id !== targetFormId)
         .map((form) => ({
           ...form,
-          innerForms: updateForms(form.innerForms),
+          innerForms: removeFormRecursively(form.innerForms),
         }));
 
-    setForms((prev) => updateForms(prev));
+    setForms((prev) => removeFormRecursively(prev));
+
+    const cleanValidators = (items) => {
+      items.forEach((form) => {
+        delete formValidators.current[form.id];
+        if (form.innerForms.length > 0) {
+          cleanValidators(form.innerForms);
+        }
+      });
+    };
+
+    cleanValidators([{ id: targetFormId, innerForms: [] }]);
   };
 
   const handleDeleteField = (formId, fieldId) => {
@@ -141,50 +156,54 @@ function App() {
         Dynamic Form Builder
       </div>
 
-      {forms.map((form, index) => {
-        const isCollapsed = collapsedFormIds.includes(form.id);
+      {forms.length === 0 ? (
+        <div className="text-center text-gray-500 mt-10">No forms available</div>
+      ) : (
+        forms.map((form, index) => {
+          const isCollapsed = collapsedFormIds.includes(form.id);
 
-        return (
-          <div
-            key={form.id}
-            className="mt-10 p-9 bg-white shadow border border-black/10 rounded-2xl m-9 flex flex-col"
-          >
+          return (
             <div
-              className={`flex justify-between items-center ${
-                isCollapsed ? "" : "mb-4"
-              }`}
+              key={form.id}
+              className="mt-10 p-9 bg-white shadow border border-black/10 rounded-2xl m-9 flex flex-col"
             >
-              <h2 className="text-lg font-semibold">Form</h2>
-              <Button
-                type="button"
-                onClick={() => toggleCollapse(form.id)}
-                className="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300 cursor-pointer !text-black"
-                buttonLabel={isCollapsed ? "Expand All" : "Collapse All"}
-              />
-            </div>
+              <div
+                className={`flex justify-between items-center ${
+                  isCollapsed ? "" : "mb-4"
+                }`}
+              >
+                <h2 className="text-lg font-semibold">Form</h2>
+                <Button
+                  type="button"
+                  onClick={() => toggleCollapse(form.id)}
+                  className="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300 cursor-pointer !text-black"
+                  buttonLabel={isCollapsed ? "Expand All" : "Collapse All"}
+                />
+              </div>
 
-            <div
-              className={`transition-max-height duration-500 ease-in-out overflow-hidden ${
-                isCollapsed ? "max-h-0 opacity-0" : "h-auto opacity-100"
-              }`}
-            >
-              <Form
-                formId={form.id}
-                fields={form.data}
-                innerForms={form.innerForms}
-                onAddField={handleAddFieldToForm}
-                onAddInnerForm={handleAddInnerForm}
-                onUpdateFieldValue={handleUpdateFieldValue}
-                forms={forms}
-                formIndex={index + 1}
-                registerFormValidator={registerFormValidator}
-                onDeleteForm={handleDeleteForm}
-                onDeleteField={handleDeleteField}
-              />
+              <div
+                className={`transition-max-height duration-500 ease-in-out overflow-hidden ${
+                  isCollapsed ? "max-h-0 opacity-0" : "h-auto opacity-100"
+                }`}
+              >
+                <Form
+                  formId={form.id}
+                  fields={form.data}
+                  innerForms={form.innerForms}
+                  onAddField={handleAddFieldToForm}
+                  onAddInnerForm={handleAddInnerForm}
+                  onUpdateFieldValue={handleUpdateFieldValue}
+                  forms={forms}
+                  formIndex={index + 1}
+                  registerFormValidator={registerFormValidator}
+                  onDeleteForm={handleDeleteForm}
+                  onDeleteField={handleDeleteField}
+                />
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      )}
 
       <div className="flex p-9 justify-end items-end w-full gap-4">
         <Button buttonLabel="Add Form" onClick={handleAddForm} />
@@ -195,3 +214,4 @@ function App() {
 }
 
 export default App;
+
