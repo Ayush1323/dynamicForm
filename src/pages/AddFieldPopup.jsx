@@ -31,7 +31,6 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
       newErrors.defaultValue = "Default value is required.";
     }
 
-    // email validation
     if (selectedOption?.inputType === "email" && defaultValue) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(defaultValue)) {
@@ -39,7 +38,6 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
       }
     }
 
-    // number validation
     if (selectedOption?.inputType === "number" && defaultValue) {
       const numberRegex = /^[0-9]+$/;
       if (!numberRegex.test(defaultValue)) {

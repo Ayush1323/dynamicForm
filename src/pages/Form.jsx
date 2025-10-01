@@ -56,7 +56,6 @@ function Form({
     fields.forEach((field) => {
       const value = formState[field.key];
 
-      // required field validation
       if (field.isRequired) {
         const isEmpty =
           value === "" ||
@@ -71,7 +70,6 @@ function Form({
         }
       }
 
-      // email validation
       if (field.inputType === "email" && value) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(value)) {
