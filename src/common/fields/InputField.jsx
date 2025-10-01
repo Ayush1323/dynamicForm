@@ -6,15 +6,20 @@ function InputField({
   editableMode,
   error,
   className,
+  min,
+  max,
 }) {
   const handleChange = (e) => {
     let newValue = e.target.value;
 
     if (type === "number") {
-      const regex = /^[0-9]*$/;
+      const regex = /^-?\d*$/;
       if (!regex.test(newValue)) {
         return;
       }
+
+      if (newValue !== "" && min !== undefined && Number(newValue) < min) return;
+      if (newValue !== "" && max !== undefined && Number(newValue) > max) return;
     }
 
     onChange(e);
@@ -22,7 +27,10 @@ function InputField({
 
   const handleKeyDown = (e) => {
     if (type === "number") {
-      if (["e", "E", "+", "-", "."].includes(e.key)) {
+      if (["e", "E", "+", "."].includes(e.key)) {
+        e.preventDefault();
+      }
+      if (e.key === "-" && e.target.selectionStart !== 0) {
         e.preventDefault();
       }
     }
@@ -37,7 +45,9 @@ function InputField({
       placeholder={placeholder}
       readOnly={editableMode === "readonly"}
       disabled={editableMode === "disabled"}
-      className={`border border-gray-300 rounded-md p-2 
+      min={type === "number" && min !== undefined ? min : undefined}
+      max={type === "number" && max !== undefined ? max : undefined}
+      className={`border border-gray-300 rounded-md p-2
         ${className}
         ${
           editableMode === "disabled" || editableMode === "readonly"
@@ -47,7 +57,6 @@ function InputField({
         ${
           error ? "border-red-500 focus:outline-none" : "focus:outline-gray-300"
         } `}
-      min={type === "number" ? 0 : undefined}
     />
   );
 }

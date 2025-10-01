@@ -16,6 +16,9 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
   const [defaultValue, setDefaultValue] = useState("");
   const [errors, setErrors] = useState({});
 
+  const [minNumber, setMinNumber] = useState("");
+  const [maxNumber, setMaxNumber] = useState("");
+
   const selectedOption = INPUT_TYPES.find((opt) => opt.key === selectedKey);
 
   const validate = () => {
@@ -38,10 +41,41 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
       }
     }
 
-    if (selectedOption?.inputType === "number" && defaultValue) {
-      const numberRegex = /^[0-9]+$/;
-      if (!numberRegex.test(defaultValue)) {
-        newErrors.defaultValue = "Only digits are allowed.";
+    if (selectedOption?.inputType === "number") {
+      if (minNumber === "") {
+        newErrors.minNumber = "Min value is required.";
+      } else if (!/^-?\d+$/.test(minNumber)) {
+        newErrors.minNumber = "Min value must be an integer.";
+      }
+
+      if (maxNumber === "") {
+        newErrors.maxNumber = "Max value is required.";
+      } else if (!/^-?\d+$/.test(maxNumber)) {
+        newErrors.maxNumber = "Max value must be an integer.";
+      }
+
+      if (
+        minNumber !== "" &&
+        maxNumber !== "" &&
+        /^-?\d+$/.test(minNumber) &&
+        /^-?\d+$/.test(maxNumber) &&
+        Number(minNumber) > Number(maxNumber)
+      ) {
+        newErrors.maxNumber = "Max value must be greater than Min value.";
+      }
+
+      if (defaultValue !== "") {
+        if (!/^-?\d+$/.test(defaultValue)) {
+          newErrors.defaultValue = "Default value must be an integer.";
+        } else {
+          const def = Number(defaultValue);
+          if (minNumber !== "" && def < Number(minNumber)) {
+            newErrors.defaultValue = `Default value cannot be less than Min (${minNumber}).`;
+          }
+          if (maxNumber !== "" && def > Number(maxNumber)) {
+            newErrors.defaultValue = `Default value cannot be greater than Max (${maxNumber}).`;
+          }
+        }
       }
     }
 
@@ -67,6 +101,11 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
       editableMode,
       placeholder,
       value: valueToSet,
+
+      ...(selectedOption?.inputType === "number" && {
+        min: Number(minNumber),
+        max: Number(maxNumber),
+      }),
     };
 
     onAddField(formId, newField);
@@ -78,6 +117,8 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
     setEditableMode("");
     setPlaceholder("");
     setDefaultValue("");
+    setMinNumber("");
+    setMaxNumber("");
     setErrors({});
   };
 
@@ -183,9 +224,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
                     onChange={(e) => setDefaultValue(e.target.value)}
                     placeholder="Enter default value"
                     className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
-                      errors.defaultValue
-                        ? "border-red-500"
-                        : "border-gray-300"
+                      errors.defaultValue ? "border-red-500" : "border-gray-300"
                     }`}
                   />
                   {errors.defaultValue && (
@@ -195,6 +234,43 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
                   )}
                 </>
               )}
+            </div>
+          )}
+
+          {selectedOption?.inputType === "number" && (
+            <div className="mt-4 gap-3">
+              <div>
+                <CommonLabel label="Min Value" />
+                <InputField
+                  type="number"
+                  value={minNumber}
+                  onChange={(e) => setMinNumber(e.target.value)}
+                  placeholder="Min value"
+                  error={errors.minNumber}
+                  className="w-full"
+                />
+                {errors.minNumber && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.minNumber}
+                  </p>
+                )}
+              </div>
+              <div className="mt-4">
+                <CommonLabel label="Max Value" />
+                <InputField
+                  type="number"
+                  value={maxNumber}
+                  onChange={(e) => setMaxNumber(e.target.value)}
+                  placeholder="Max value"
+                  error={errors.maxNumber}
+                  className="w-full"
+                />
+                {errors.maxNumber && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.maxNumber}
+                  </p>
+                )}
+              </div>
             </div>
           )}
 

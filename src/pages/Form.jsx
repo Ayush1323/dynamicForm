@@ -83,7 +83,9 @@ function Form({
     setErrors(newErrors);
 
     const innerResults = innerForms.map((inner) =>
-      inner.validator ? inner.validator(showAll) : { isValid: true, data: inner }
+      inner.validator
+        ? inner.validator(showAll)
+        : { isValid: true, data: inner }
     );
 
     return {
@@ -173,6 +175,8 @@ function Form({
               placeholder={field.placeholder || ""}
               editableMode={field.editableMode}
               error={errors[field.key]}
+              min={field.inputType === "number" ? field.min : undefined}
+              max={field.inputType === "number" ? field.max : undefined}
             />
             {errors[field.key] && (
               <span className="text-red-500 text-sm">{errors[field.key]}</span>

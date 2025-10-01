@@ -8,6 +8,8 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
   const [isRequired, setIsRequired] = useState(false);
   const [editableMode, setEditableMode] = useState("editable");
   const [value, setValue] = useState("");
+  const [min, setMin] = useState(""); // 👉 added
+  const [max, setMax] = useState(""); // 👉 added
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -17,6 +19,8 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
       setIsRequired(!!field.isRequired);
       setEditableMode(field.editableMode || "editable");
       setValue(field.value ?? "");
+      setMin(field.min ?? ""); // initialize min
+      setMax(field.max ?? ""); // initialize max
       setErrors({});
     }
   }, [field]);
@@ -37,6 +41,18 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
     }
   };
 
+  const handleMinChange = (e) => {
+    const val = e.target.value;
+    if (/^-?\d*$/.test(val)) setMin(val);
+    if (errors.min && val) setErrors((prev) => ({ ...prev, min: undefined }));
+  };
+
+  const handleMaxChange = (e) => {
+    const val = e.target.value;
+    if (/^-?\d*$/.test(val)) setMax(val);
+    if (errors.max && val) setErrors((prev) => ({ ...prev, max: undefined }));
+  };
+
   const handleEditableModeChange = (newMode) => {
     setEditableMode(newMode);
     if (errors.value && newMode === "editable") {
@@ -46,8 +62,9 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
 
   const handleSave = (event) => {
     event.preventDefault();
-
     let newErrors = {};
+
+    if (!label.trim()) newErrors.label = "Label is required";
 
     if (
       (editableMode === "readonly" || editableMode === "disabled") &&
@@ -57,21 +74,19 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
       newErrors.value = "Default value is required.";
     }
 
-    if (!label.trim()) {
-      newErrors.label = "Label is required";
-    }
-
     if (field.inputType === "email" && value) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value)) {
-        newErrors.value = "Please enter a valid email address.";
-      }
+      if (!emailRegex.test(value)) newErrors.value = "Please enter a valid email address.";
     }
 
-    if (field.inputType === "number" && value) {
-      const numberRegex = /^[0-9]+$/;
-      if (!numberRegex.test(value)) {
+    if (field.inputType === "number") {
+      if (value && !/^-?\d+$/.test(value)) {
         newErrors.value = "Only digits are allowed.";
+      }
+      if (min === "") newErrors.min = "Min value is required.";
+      if (max === "") newErrors.max = "Max value is required.";
+      if (min !== "" && max !== "" && Number(min) > Number(max)) {
+        newErrors.max = "Max must be greater than or equal to Min.";
       }
     }
 
@@ -87,6 +102,8 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
       isRequired,
       editableMode,
       value,
+      min: field.inputType === "number" ? Number(min) : undefined,
+      max: field.inputType === "number" ? Number(max) : undefined,
     });
 
     onClose();
@@ -105,9 +122,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
               }`}
               rows={3}
             />
-            {errors.value && (
-              <p className="text-red-500 text-sm mt-1">{errors.value}</p>
-            )}
+            {errors.value && <p className="text-red-500 text-sm mt-1">{errors.value}</p>}
           </>
         );
       case "checkbox":
@@ -121,39 +136,6 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
             Checked (default)
           </label>
         );
-      case "range":
-        return (
-          <>
-            <input
-              type="number"
-              value={value}
-              onChange={(e) => handleValueChange(e.target.value)}
-              className={`w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-400 ${
-                errors.value ? "border-red-500" : ""
-              }`}
-              placeholder="Default range value"
-            />
-            {errors.value && (
-              <p className="text-red-500 text-sm mt-1">{errors.value}</p>
-            )}
-          </>
-        );
-      case "date":
-        return (
-          <>
-            <input
-              type="date"
-              value={value}
-              onChange={(e) => handleValueChange(e.target.value)}
-              className={`w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-400 ${
-                errors.value ? "border-red-500" : ""
-              }`}
-            />
-            {errors.value && (
-              <p className="text-red-500 text-sm mt-1">{errors.value}</p>
-            )}
-          </>
-        );
       default:
         return (
           <>
@@ -165,10 +147,37 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
                 errors.value ? "border-red-500" : ""
               }`}
               placeholder="Default value"
-              min={field.inputType === "number" ? 0 : undefined}
+              min={field.inputType === "number" ? min : undefined}
+              max={field.inputType === "number" ? max : undefined}
             />
-            {errors.value && (
-              <p className="text-red-500 text-sm mt-1">{errors.value}</p>
+            {errors.value && <p className="text-red-500 text-sm mt-1">{errors.value}</p>}
+            {field.inputType === "number" && (
+              <div className="flex gap-2 mt-2">
+                <div className="flex flex-col w-1/2">
+                  <label className="text-sm font-medium">Min Value</label>
+                  <input
+                    type="number"
+                    value={min}
+                    onChange={handleMinChange}
+                    className={`w-full border rounded py-2 px-2 border-gray-300 ${
+                      errors.min ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors.min && <p className="text-red-500 text-xs">{errors.min}</p>}
+                </div>
+                <div className="flex flex-col w-1/2">
+                  <label className="text-sm font-medium">Max Value</label>
+                  <input
+                    type="number"
+                    value={max}
+                    onChange={handleMaxChange}
+                    className={`w-full border rounded py-2 px-2 border-gray-300 ${
+                      errors.max ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors.max && <p className="text-red-500 text-xs">{errors.max}</p>}
+                </div>
+              </div>
             )}
           </>
         );
@@ -197,14 +206,10 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
                 value={label}
                 onChange={handleLabelChange}
                 className={`w-full border rounded py-3 px-3 border-gray-300 ${
-                  errors.label
-                    ? "border-red-500 focus:outline-none"
-                    : "focus:outline-gray-300"
+                  errors.label ? "border-red-500 focus:outline-none" : "focus:outline-gray-300"
                 }`}
               />
-              {errors.label && (
-                <p className="text-red-500 text-sm mt-1">{errors.label}</p>
-              )}
+              {errors.label && <p className="text-red-500 text-sm mt-1">{errors.label}</p>}
             </div>
 
             <div>
@@ -237,16 +242,13 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
                 <option value="disabled">Disabled</option>
               </select>
             </div>
+
             <div>
-              <div>
-                {editableMode === "editable" ? (
-                  <label className="block mb-1 font-medium">
-                    Default Value
-                  </label>
-                ) : (
-                  <CommonLabel label="Default Value" />
-                )}
-              </div>
+              {editableMode === "editable" ? (
+                <label className="block mb-1 font-medium">Default Value</label>
+              ) : (
+                <CommonLabel label="Default Value" />
+              )}
               <div>{renderValueEditor()}</div>
             </div>
 
