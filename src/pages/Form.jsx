@@ -308,6 +308,7 @@ function Form({
             forms={forms}
             formIndex={index + 1}
             onDeleteForm={onDeleteForm}
+            onDeleteField={onDeleteField}
             parentIndex={currentIndex}
             registerFormValidator={(id, fn) => (inner.validator = fn)}
           />
