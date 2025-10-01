@@ -9,8 +9,8 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
   const [isRequired, setIsRequired] = useState(false);
   const [editableMode, setEditableMode] = useState("editable");
   const [value, setValue] = useState("");
-  const [min, setMin] = useState(""); // 👉 added
-  const [max, setMax] = useState(""); // 👉 added
+  const [min, setMin] = useState(""); // For number fields
+  const [max, setMax] = useState(""); // For number fields
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -20,8 +20,8 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
       setIsRequired(!!field.isRequired);
       setEditableMode(field.editableMode || "editable");
       setValue(field.value ?? "");
-      setMin(field.min ?? ""); // initialize min
-      setMax(field.max ?? ""); // initialize max
+      setMin(field.min ?? "");
+      setMax(field.max ?? "");
       setErrors({});
     }
   }, [field]);
@@ -42,52 +42,60 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
     }
   };
 
-  const handleMinChange = (e) => {
-    const val = e.target.value;
-    if (/^-?\d*$/.test(val)) setMin(val);
-    if (errors.min && val) setErrors((prev) => ({ ...prev, min: undefined }));
+  const handleMinChange = (val) => {
+    setMin(val);
+    if (errors.min) setErrors((prev) => ({ ...prev, min: undefined }));
+    if (errors.max && max !== "" && Number(val) <= Number(max)) {
+      setErrors((prev) => ({ ...prev, max: undefined }));
+    }
   };
 
-  const handleMaxChange = (e) => {
-    const val = e.target.value;
-    if (/^-?\d*$/.test(val)) setMax(val);
-    if (errors.max && val) setErrors((prev) => ({ ...prev, max: undefined }));
+  const handleMaxChange = (val) => {
+    setMax(val);
+    if (errors.max) setErrors((prev) => ({ ...prev, max: undefined }));
+    if (errors.min && min !== "" && Number(min) <= Number(val)) {
+      setErrors((prev) => ({ ...prev, min: undefined }));
+    }
   };
 
   const handleEditableModeChange = (newMode) => {
     setEditableMode(newMode);
-    if (errors.value && newMode === "editable") {
-      setErrors((prev) => ({ ...prev, value: undefined }));
-    }
   };
 
   const handleSave = (event) => {
     event.preventDefault();
     let newErrors = {};
 
-    if (!label.trim()) newErrors.label = "Label is required";
+    if (!label.trim()) newErrors.label = "Field label cannot be empty.";
 
     if (
       (editableMode === "readonly" || editableMode === "disabled") &&
       !value &&
       field.inputType !== "checkbox"
     ) {
-      newErrors.value = "Default value is required.";
+      newErrors.value = "Default value cannot be empty for readonly/disabled field.";
     }
 
+    // Email validation
     if (field.inputType === "email" && value) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value)) newErrors.value = "Please enter a valid email address.";
+      if (!emailRegex.test(value)) newErrors.value = "Enter a valid email address.";
     }
 
     if (field.inputType === "number") {
       if (value && !/^-?\d+$/.test(value)) {
-        newErrors.value = "Only digits are allowed.";
+        newErrors.value = "Only integer numbers are allowed.";
       }
-      if (min === "") newErrors.min = "Min value is required.";
-      if (max === "") newErrors.max = "Max value is required.";
+      if (min === "") newErrors.min = "Minimum value is required.";
+      if (max === "") newErrors.max = "Maximum value is required.";
       if (min !== "" && max !== "" && Number(min) > Number(max)) {
-        newErrors.max = "Max must be greater than or equal to Min.";
+        newErrors.max = "Maximum must be greater than or equal to Minimum.";
+      }
+      if (value !== "" && Number(value) < Number(min)) {
+        newErrors.value = `Value cannot be less than minimum (${min}).`;
+      }
+      if (value !== "" && Number(value) > Number(max)) {
+        newErrors.value = `Value cannot be greater than maximum (${max}).`;
       }
     }
 
@@ -140,18 +148,17 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
       default:
         return (
           <>
-            <input
+            <InputField
               type={field.inputType || "text"}
               value={value}
               onChange={(e) => handleValueChange(e.target.value)}
-              className={`w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-400 ${
-                errors.value ? "border-red-500" : ""
-              }`}
               placeholder="Default value"
               min={field.inputType === "number" ? min : undefined}
               max={field.inputType === "number" ? max : undefined}
+              className={`w-full ${errors.value ? "border-red-500" : ""}`}
             />
             {errors.value && <p className="text-red-500 text-sm mt-1">{errors.value}</p>}
+
             {field.inputType === "number" && (
               <div className="flex gap-2 mt-2">
                 <div className="flex flex-col w-1/2">
@@ -159,24 +166,20 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
                   <InputField
                     type="number"
                     value={min}
-                    onChange={handleMinChange}
-                    className={`w-full border rounded py-2 px-2 border-gray-300 ${
-                      errors.min ? "border-red-500" : ""
-                    }`}
+                    onChange={(e) => handleMinChange(e.target.value)}
+                    className={`w-full ${errors.min ? "border-red-500" : ""}`}
                   />
-                  {errors.min && <p className="text-red-500 text-xs">{errors.min}</p>}
+                  {errors.min && <p className="text-red-500 text-xs mt-0.5">{errors.min}</p>}
                 </div>
                 <div className="flex flex-col w-1/2">
                   <label className="text-sm font-medium">Max Value</label>
                   <InputField
                     type="number"
                     value={max}
-                    onChange={handleMaxChange}
-                    className={`w-full border rounded py-2 px-2 border-gray-300 ${
-                      errors.max ? "border-red-500" : ""
-                    }`}
+                    onChange={(e) => handleMaxChange(e.target.value)}
+                    className={`w-full ${errors.max ? "border-red-500" : ""}`}
                   />
-                  {errors.max && <p className="text-red-500 text-xs">{errors.max}</p>}
+                  {errors.max && <p className="text-red-500 text-xs mt-0.5">{errors.max}</p>}
                 </div>
               </div>
             )}

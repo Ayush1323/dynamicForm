@@ -45,7 +45,7 @@ function InputField({
       placeholder={placeholder}
       readOnly={editableMode === "readonly"}
       disabled={editableMode === "disabled"}
-      min={type === "number" && min !== undefined ? min : undefined}
+      min={type === "number" && min !== undefined ? min : undefined}  
       max={type === "number" && max !== undefined ? max : undefined}
       className={`border border-gray-300 rounded-md p-2
         ${className}
