@@ -157,7 +157,9 @@ function App() {
       </div>
 
       {forms.length === 0 ? (
-        <div className="text-center text-gray-500 mt-10">No forms available</div>
+        <div className="text-center text-gray-500 mt-10">
+          No forms available.
+        </div>
       ) : (
         forms.map((form, index) => {
           const isCollapsed = collapsedFormIds.includes(form.id);
@@ -214,4 +216,3 @@ function App() {
 }
 
 export default App;
-
