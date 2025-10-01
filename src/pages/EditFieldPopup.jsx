@@ -9,8 +9,8 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
   const [isRequired, setIsRequired] = useState(false);
   const [editableMode, setEditableMode] = useState("editable");
   const [value, setValue] = useState("");
-  const [min, setMin] = useState(""); // For number fields
-  const [max, setMax] = useState(""); // For number fields
+  const [min, setMin] = useState(""); 
+  const [max, setMax] = useState(""); 
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -76,7 +76,6 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
       newErrors.value = "Default value cannot be empty for readonly/disabled field.";
     }
 
-    // Email validation
     if (field.inputType === "email" && value) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(value)) newErrors.value = "Enter a valid email address.";

@@ -323,7 +323,12 @@ function Form({
         isOpen={showAddFieldPopup}
         onClose={() => setShowAddFieldPopup(false)}
         formId={formId}
+        fields={fields}
         onAddField={(fid, newField) => {
+          if (fields.some((f) => f.key === newField.key)) {
+            return;
+          }
+
           setFormState((prev) => ({
             ...prev,
             [newField.key]:

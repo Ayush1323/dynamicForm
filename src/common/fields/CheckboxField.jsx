@@ -10,7 +10,7 @@ function CheckboxField({ checked, onChange, editableMode, error, className }) {
         ${className}
         ${
           editableMode == "disabled" || editableMode == "readonly"
-            ? "bg-gray-100 cursor-not-allowed"
+            ? "bg-gray-100 !cursor-not-allowed"
             : ""
         } 
         ${error ? "border-red-500" : ""}`}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../common/Button";
 import { INPUT_TYPES } from "../utils/typesOfInput";
 import CheckboxField from "../common/fields/CheckboxField";
@@ -7,7 +7,7 @@ import CommonLabel from "../common/CommonLabel";
 
 const generateId = () => Date.now() + Math.floor(Math.random() * 10000);
 
-function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
+function AddFieldPopup({ isOpen, onClose, formId, fields = [], onAddField }) {
   const [selectedKey, setSelectedKey] = useState("");
   const [label, setLabel] = useState("");
   const [isRequired, setIsRequired] = useState(false);
@@ -15,7 +15,6 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
   const [placeholder, setPlaceholder] = useState("");
   const [defaultValue, setDefaultValue] = useState("");
   const [errors, setErrors] = useState({});
-
   const [minNumber, setMinNumber] = useState("");
   const [maxNumber, setMaxNumber] = useState("");
 
@@ -23,8 +22,14 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
 
   const validate = () => {
     const newErrors = {};
-    if (!selectedKey) newErrors.selectedKey = "Please select a field type";
-    if (!label.trim()) newErrors.label = "Field label is required";
+
+    if (!selectedKey) newErrors.selectedKey = "Please select a field type.";
+    if (!label.trim()) newErrors.label = "Field label is required.";
+
+    const key = label.toLowerCase().replace(/\s+/g, "_");
+    if (fields.some((f) => f.key === key)) {
+      newErrors.label = "A field with this label already exists.";
+    }
 
     if (
       (editableMode === "readonly" || editableMode === "disabled") &&
@@ -101,7 +106,6 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
       editableMode,
       placeholder,
       value: valueToSet,
-
       ...(selectedOption?.inputType === "number" && {
         min: Number(minNumber),
         max: Number(maxNumber),
@@ -109,8 +113,10 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
     };
 
     onAddField(formId, newField);
-    onClose();
+    handleClose();
+  };
 
+  const resetForm = () => {
     setSelectedKey("");
     setLabel("");
     setIsRequired(false);
@@ -122,6 +128,25 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
     setErrors({});
   };
 
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedKey("");
+      setLabel("");
+      setIsRequired(false);
+      setEditableMode("");
+      setPlaceholder("");
+      setDefaultValue("");
+      setMinNumber("");
+      setMaxNumber("");
+      setErrors({});
+    }
+  }, [isOpen]);
+
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 transition-opacity duration-500 ${
@@ -131,7 +156,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
       <div className="bg-white rounded-xl w-full max-w-[408px] shadow-lg p-4">
         <div className="flex justify-between items-center">
           <div className="text-center text-xl font-bold">Add Field</div>
-          <div onClick={onClose} className="text-center cursor-pointer">
+          <div onClick={handleClose} className="text-center cursor-pointer">
             ❌
           </div>
         </div>
@@ -208,7 +233,7 @@ function AddFieldPopup({ isOpen, onClose, formId, onAddField }) {
           {(editableMode === "readonly" || editableMode === "disabled") && (
             <div className="mt-4">
               {selectedOption?.inputType === "checkbox" ? (
-                <div className="flex gap-1.5">
+                <div className="flex gap-1.5 items-center">
                   <label className="font-medium">Default Value</label>
                   <CheckboxField
                     checked={defaultValue}
