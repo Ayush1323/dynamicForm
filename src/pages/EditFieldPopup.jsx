@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Button from "../common/Button";
 import CommonLabel from "../common/CommonLabel";
+import InputField from "../common/fields/InputField";
 
 const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
   const [label, setLabel] = useState("");
@@ -155,7 +156,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
               <div className="flex gap-2 mt-2">
                 <div className="flex flex-col w-1/2">
                   <label className="text-sm font-medium">Min Value</label>
-                  <input
+                  <InputField
                     type="number"
                     value={min}
                     onChange={handleMinChange}
@@ -167,7 +168,7 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
                 </div>
                 <div className="flex flex-col w-1/2">
                   <label className="text-sm font-medium">Max Value</label>
-                  <input
+                  <InputField
                     type="number"
                     value={max}
                     onChange={handleMaxChange}
