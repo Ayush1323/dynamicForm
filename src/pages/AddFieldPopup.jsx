@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import Button from "../common/Button";
-import { INPUT_TYPES } from "../utils/typesOfInput";
+import CommonLabel from "../common/CommonLabel";
 import CheckboxField from "../common/fields/CheckboxField";
 import InputField from "../common/fields/InputField";
-import CommonLabel from "../common/CommonLabel";
+import { INPUT_TYPES } from "../utils/typesOfInput";
 
 const generateId = () => Date.now() + Math.floor(Math.random() * 10000);
 
@@ -244,9 +244,16 @@ function AddFieldPopup({ isOpen, onClose, formId, fields = [], onAddField }) {
                 <>
                   <CommonLabel label="Default Value" />
                   <InputField
-                    type={selectedOption?.inputType || "text"}
+                    type={
+                      selectedOption?.inputType === "email"
+                        ? "text"
+                        : selectedOption?.inputType || "text"
+                    }
                     value={defaultValue}
-                    onChange={(e) => setDefaultValue(e.target.value)}
+                    onChange={(e) => {
+                      setDefaultValue(e.target.value);
+                      setErrors((prev) => ({ ...prev, defaultValue: "" }));
+                    }}
                     placeholder="Enter default value"
                     className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
                       errors.defaultValue ? "border-red-500" : "border-gray-300"

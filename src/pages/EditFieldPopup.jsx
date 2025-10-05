@@ -148,7 +148,11 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
         return (
           <>
             <InputField
-              type={field.inputType || "text"}
+              type={
+                field?.inputType === "email"
+                  ? "text"
+                  : field?.inputType || "text"
+              }
               value={value}
               onChange={(e) => handleValueChange(e.target.value)}
               placeholder="Default value"
