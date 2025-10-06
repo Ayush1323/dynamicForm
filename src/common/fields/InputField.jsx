@@ -8,6 +8,7 @@ function InputField({
   className,
   min,
   max,
+  maxLength,
 }) {
   const handleChange = (e) => {
     let newValue = e.target.value;
@@ -57,6 +58,7 @@ function InputField({
         ${
           error ? "border-red-500 focus:outline-none" : "focus:outline-gray-300"
         } `}
+        maxLength={maxLength}
     />
   );
 }

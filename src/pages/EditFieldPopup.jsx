@@ -9,8 +9,8 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
   const [isRequired, setIsRequired] = useState(false);
   const [editableMode, setEditableMode] = useState("editable");
   const [value, setValue] = useState("");
-  const [min, setMin] = useState(""); 
-  const [max, setMax] = useState(""); 
+  const [min, setMin] = useState("");
+  const [max, setMax] = useState("");
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -73,12 +73,14 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
       !value &&
       field.inputType !== "checkbox"
     ) {
-      newErrors.value = "Default value cannot be empty for readonly/disabled field.";
+      newErrors.value =
+        "Default value cannot be empty for readonly/disabled field.";
     }
 
     if (field.inputType === "email" && value) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(value)) newErrors.value = "Enter a valid email address.";
+      if (!emailRegex.test(value))
+        newErrors.value = "Enter a valid email address.";
     }
 
     if (field.inputType === "number") {
@@ -130,7 +132,9 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
               }`}
               rows={3}
             />
-            {errors.value && <p className="text-red-500 text-sm mt-1">{errors.value}</p>}
+            {errors.value && (
+              <p className="text-red-500 text-sm mt-1">{errors.value}</p>
+            )}
           </>
         );
       case "checkbox":
@@ -158,9 +162,11 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
               placeholder="Default value"
               min={field.inputType === "number" ? min : undefined}
               max={field.inputType === "number" ? max : undefined}
-              className={`w-full ${errors.value ? "border-red-500" : ""}`}
+              className={`w-full py-2.5 px-3 ${errors.value ? "border-red-500" : ""}`}
             />
-            {errors.value && <p className="text-red-500 text-sm mt-1">{errors.value}</p>}
+            {errors.value && (
+              <p className="text-red-500 text-sm mt-1">{errors.value}</p>
+            )}
 
             {field.inputType === "number" && (
               <div className="flex gap-2 mt-2">
@@ -170,9 +176,11 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
                     type="number"
                     value={min}
                     onChange={(e) => handleMinChange(e.target.value)}
-                    className={`w-full ${errors.min ? "border-red-500" : ""}`}
+                    className={`w-full py-2.5 px-3 ${errors.min ? "border-red-500" : ""}`}
                   />
-                  {errors.min && <p className="text-red-500 text-xs mt-0.5">{errors.min}</p>}
+                  {errors.min && (
+                    <p className="text-red-500 text-xs mt-0.5">{errors.min}</p>
+                  )}
                 </div>
                 <div className="flex flex-col w-1/2">
                   <label className="text-sm font-medium">Max Value</label>
@@ -180,9 +188,11 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
                     type="number"
                     value={max}
                     onChange={(e) => handleMaxChange(e.target.value)}
-                    className={`w-full ${errors.max ? "border-red-500" : ""}`}
+                    className={`w-full py-2.5 px-3 ${errors.max ? "border-red-500" : ""}`}
                   />
-                  {errors.max && <p className="text-red-500 text-xs mt-0.5">{errors.max}</p>}
+                  {errors.max && (
+                    <p className="text-red-500 text-xs mt-0.5">{errors.max}</p>
+                  )}
                 </div>
               </div>
             )}
@@ -209,22 +219,27 @@ const EditFieldPopup = ({ field, isOpen, onClose, onUpdateField }) => {
           <div className="flex flex-col gap-3">
             <div>
               <CommonLabel label="Field Label" />
-              <input
+              <InputField
                 value={label}
                 onChange={handleLabelChange}
-                className={`w-full border rounded py-3 px-3 border-gray-300 ${
-                  errors.label ? "border-red-500 focus:outline-none" : "focus:outline-gray-300"
+                className={`w-full border rounded py-2.5 px-3 border-gray-300 ${
+                  errors.label
+                    ? "border-red-500 focus:outline-none"
+                    : "focus:outline-gray-300"
                 }`}
+                maxLength="20"
               />
-              {errors.label && <p className="text-red-500 text-sm mt-1">{errors.label}</p>}
+              {errors.label && (
+                <p className="text-red-500 text-sm mt-1">{errors.label}</p>
+              )}
             </div>
 
             <div>
               <label className="font-medium mb-1">Placeholder</label>
-              <input
+              <InputField
                 value={placeholder}
                 onChange={(e) => setPlaceholder(e.target.value)}
-                className="w-full border rounded py-3 px-3 border-gray-300 focus:outline-gray-300"
+                className="w-full border rounded py-2.5 px-3 border-gray-300 focus:outline-gray-300"
               />
             </div>
 

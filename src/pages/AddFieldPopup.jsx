@@ -188,7 +188,7 @@ function AddFieldPopup({ isOpen, onClose, formId, fields = [], onAddField }) {
 
           <div className="mt-4">
             <CommonLabel label="Field Label" />
-            <input
+            <InputField
               value={label}
               onChange={(e) => {
                 setLabel(e.target.value);
@@ -196,9 +196,12 @@ function AddFieldPopup({ isOpen, onClose, formId, fields = [], onAddField }) {
               }}
               type="text"
               placeholder="Field Label"
-              className={`border rounded-md py-3 px-3 w-full capitalize focus:outline-none ${
-                errors.label ? "border-red-500" : "border-gray-300"
+              className={`border rounded-md py-3 px-3 w-full capitalize ${
+                errors.label
+                  ? "border-red-500 focus:outline-none"
+                  : "border-gray-300"
               }`}
+              maxLength="20"
             />
             {errors.label && (
               <p className="text-red-500 text-sm mt-1">{errors.label}</p>
