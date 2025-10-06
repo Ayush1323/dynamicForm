@@ -258,8 +258,10 @@ function AddFieldPopup({ isOpen, onClose, formId, fields = [], onAddField }) {
                       setErrors((prev) => ({ ...prev, defaultValue: "" }));
                     }}
                     placeholder="Enter default value"
-                    className={`border rounded-md py-3 px-3 w-full focus:outline-none ${
-                      errors.defaultValue ? "border-red-500" : "border-gray-300"
+                    className={`border rounded-md py-3 px-3 w-full ${
+                      errors.defaultValue
+                        ? "border-red-500 focus:outline-none"
+                        : "border-gray-300"
                     }`}
                   />
                   {errors.defaultValue && (
@@ -324,7 +326,7 @@ function AddFieldPopup({ isOpen, onClose, formId, fields = [], onAddField }) {
               value={placeholder}
               onChange={(e) => setPlaceholder(e.target.value)}
               placeholder="Enter placeholder"
-              className="border rounded-md py-3 px-3 w-full focus:outline-none border-gray-300"
+              className="border rounded-md py-3 px-3 w-full border-gray-300"
             />
           </div>
 
