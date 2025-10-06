@@ -270,16 +270,19 @@ function AddFieldPopup({ isOpen, onClose, formId, fields = [], onAddField }) {
           )}
 
           {selectedOption?.inputType === "number" && (
-            <div className="mt-4 gap-3">
+            <>
               <div>
                 <CommonLabel label="Min Value" />
                 <InputField
                   type="number"
                   value={minNumber}
-                  onChange={(e) => setMinNumber(e.target.value)}
+                  onChange={(e) => {
+                    setMinNumber(e.target.value);
+                    setErrors((prev) => ({ ...prev, minNumber: "" }));
+                  }}
                   placeholder="Min value"
                   error={errors.minNumber}
-                  className="w-full"
+                  className="border rounded-md py-3 px-3 w-full"
                 />
                 {errors.minNumber && (
                   <p className="text-red-500 text-sm mt-1">
@@ -292,10 +295,13 @@ function AddFieldPopup({ isOpen, onClose, formId, fields = [], onAddField }) {
                 <InputField
                   type="number"
                   value={maxNumber}
-                  onChange={(e) => setMaxNumber(e.target.value)}
+                  onChange={(e) => {
+                    setMaxNumber(e.target.value);
+                    setErrors((prev) => ({ ...prev, maxNumber: "" }));
+                  }}
                   placeholder="Max value"
                   error={errors.maxNumber}
-                  className="w-full"
+                  className="border rounded-md py-3 px-3 w-full"
                 />
                 {errors.maxNumber && (
                   <p className="text-red-500 text-sm mt-1">
@@ -303,7 +309,7 @@ function AddFieldPopup({ isOpen, onClose, formId, fields = [], onAddField }) {
                   </p>
                 )}
               </div>
-            </div>
+            </>
           )}
 
           <div className="mt-4">
