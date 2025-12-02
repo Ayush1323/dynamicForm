@@ -158,7 +158,7 @@ function App() {
 
       {forms.length === 0 ? (
         <div className="text-center text-gray-500 mt-10">
-          No forms available....
+          No forms available.
         </div>
       ) : (
         forms.map((form, index) => {
